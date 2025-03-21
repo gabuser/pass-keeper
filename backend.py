@@ -99,9 +99,9 @@ class login:
             metade = (inicio+final)//2 
             chute = listas_usuarios[metade]
 
-            if chute == self.usuario or chute == senhas:
+            if chute == self.usuario:
                 return True
-            if chute < self.usuario or chute < senhas:
+            if chute < self.usuario:
                 inicio = metade+1 
             
             else:
