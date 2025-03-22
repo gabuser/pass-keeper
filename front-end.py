@@ -26,7 +26,7 @@ if escolher == '0':
 
         if verificacao:
             print(f'usuario existente para {usuario}')
-            continue
+            #continue
         
         else:
             senha = input('crie uma senha forte ou g para gerar uma:')
