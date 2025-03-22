@@ -107,6 +107,21 @@ class login:
             else:
                 final = metade-1
     
+    def buscar_senhas(self,usuario:str,todas:bool, especifica:str):
+
+        comandos.execute("""select usuario, id_login from login
+                         where usuario = :usuario """, {"usuario":usuario})
+        id_conta= comandos.fetchmany()[0][1]
+        conectar.commit()
+        
+        if(todas):
+            comandos.execute("""select plataformas,senhas from conta
+                             where id_usuario =:id_usuario""",{"id_usuario":id_conta})
+            dados = comandos.fetchall()
+            conectar.commit()
+            for formatar in dados:
+                print(formatar)
+
     def gerar_senha(self):
         self.resultado = ''.join(
             random.choices(string.ascii_letters+string.digits+

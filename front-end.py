@@ -10,7 +10,7 @@ apagar = False
 ambiguidade = None
 
 inicio= ['criar conta','entrar']
-entrada = ['armazenar senhas','apagar conta']
+entrada = ['armazenar senhas','apagar conta',"visualizar senhas"]
 
 for a, c in enumerate(inicio):
     print(f'{a} -{c}')
@@ -41,7 +41,7 @@ if escolher == '0':
 elif escolher == '1':
     while not auth:
         usuario = input('insira seu usuario:')
-        senha = getpass.getpass('insira sua senha:')
+        senha = input('insira sua senha:')
 
         auth = banco.entrar(usuario,senha)
 
@@ -79,4 +79,5 @@ elif escolher == '1':
         conta.id_(None,usuario,None,apagar)
         #conta.apagar_conta(usuario)
     
-
+    elif escolher == '2':
+        banco.buscar_senhas(usuario,True,False)
