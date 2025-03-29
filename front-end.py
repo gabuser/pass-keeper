@@ -27,14 +27,14 @@ if escolher == '0':
 
         usuario = input('crie um usuário:')
         senha = input('crie uma senha forte ou g para gerar uma:')
-        
-        salvar_dados['user'] = usuario
-        salvar_dados['password'] = senha
-        verificacao = banco.busca(salvar_dados['user'],False)
-        print(verificacao)
+        salvar_dados['user']= usuario
 
+        verificacao = banco.busca(salvar_dados['user'])
+        salvar_dados['user'] =verificacao if verificacao else usuario
+        salvar_dados['password'] = senha
+        
         match (salvar_dados):
-            case {"user":data} | {"password":data} if salvar_dados['user'] != "" and salvar_dados['password'] != "":
+            case {"user":data} | {"password":data} if salvar_dados['user'] != "" and salvar_dados['password'] != "" and salvar_dados['user'] !=True:
                 
                 banco.criar_conta(salvar_dados['user'], salvar_dados['password'])
                 print("conta criada com sucesso")
@@ -46,7 +46,7 @@ if escolher == '0':
                 print("conta criada com sucesso!")
                 break
 
-            case {"user": data} if verificacao == True:
+            case {"user": True}:
                 print(f"usuário existente para {usuario}")
             
             case _:

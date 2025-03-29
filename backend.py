@@ -61,35 +61,36 @@ class login:
         possível solução: criptografar senhas dos usuários ao deslogar do sistema."""
 
     
-    def busca(self,usuario:str,senhas:str) ->bool: #busca para autenticar os usuários
+    def busca(self,usuario:str) ->bool: #busca para autenticar os usuários
         self.usuario = usuario 
         indice = 0 
         nomes= 0 
         listas_usuarios:list= []
-        if(senhas): #preciso trabalhar nisso aqui, esqueci de apagar ksksksks
-            comandos.execute("""select id_login from login
-                             where usuario = :usuario""",{'usuario':self.usuario})
+        """if(senhas): #preciso trabalhar nisso aqui, esqueci de apagar ksksksks
+            comandos.execute(select id_login from login
+                             where usuario = :usuario,{'usuario':self.usuario})
             valor = comandos.fetchone()[0]
             
-            comandos.execute("""select  plataformas from conta
-                             where id_usuario = :id_usuario""",{'id_usuario':valor})
+            comandos.execute(select  plataformas from conta
+                             where id_usuario = :id_usuario,{'id_usuario':valor})
             valor = comandos.fetchall()
             for c in range(len(valor)):
                 listas_usuarios.append(
                     valor[indice][0]
                 )
                 indice+=1
-            #print(valor[1][0])
+            #print(valor[1][0])"""
         
-        else:
-            comandos.execute("""select usuario from login""")
-            valor = comandos.fetchall()
-            for c in range(len(valor)):
+        
+        comandos.execute("""select usuario from login""")
+        valor = comandos.fetchall()
+        conectar.commit()
+        for c in range(len(valor)):
                 listas_usuarios.append(
                 valor[indice][nomes])
             
                 indice+=1
-
+        
         inicio = 0 
         final = len(listas_usuarios)-1 
 
