@@ -9,6 +9,11 @@ plataforma = None
 apagar = False
 ambiguidade = None
 
+salvar_dados= {
+    "user":str,
+    "password":str
+}
+
 inicio= ['criar conta','entrar']
 entrada = ['armazenar senhas','apagar conta',"visualizar senhas"]
 
@@ -21,14 +26,37 @@ if escolher == '0':
     while True:
 
         usuario = input('crie um usuário:')
-        #senha = input('crie uma senha forte ou g para gerar uma:')
-        verificacao = banco.busca(usuario,False)
+        senha = input('crie uma senha forte ou g para gerar uma:')
+        
+        salvar_dados['user'] = usuario
+        salvar_dados['password'] = senha
+        verificacao = banco.busca(salvar_dados['user'],False)
+        print(verificacao)
 
-        if verificacao:
+        match (salvar_dados):
+            case {"user":data} | {"password":data} if salvar_dados['user'] != "" and salvar_dados['password'] != "":
+                
+                banco.criar_conta(salvar_dados['user'], salvar_dados['password'])
+                print("conta criada com sucesso")
+                break
+            
+            case {"passoword":"g"}:
+                senha = banco.gerar_senha()
+                banco.criar_conta()
+                print("conta criada com sucesso!")
+                break
+
+            case {"user": data} if verificacao == True:
+                print(f"usuário existente para {usuario}")
+            
+            case _:
+                print("crie uma conta válida!")
+        """if verificacao:
             print(f'usuario existente para {usuario}')
             #continue
         
         else:
+            match()
             senha = input('crie uma senha forte ou g para gerar uma:')
             if(senha == 'g'):
                 senha = banco.gerar_senha()
@@ -36,7 +64,7 @@ if escolher == '0':
 
             banco.criar_conta(usuario,senha)
             print('conta criada com suscesso!!')
-            break
+            break"""
 
 elif escolher == '1':
     while not auth:

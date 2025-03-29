@@ -11,13 +11,13 @@ class login:
     def __init__(self) -> None:
         comandos.execute("""create table if not exists login(
                          id_login integer primary key autoincrement,
-                         usuario text,
-                         senha text
+                         usuario text not null,
+                         senha text not null
                          )""")
         
         comandos.execute("""create table if not exists conta(
-                         plataformas text,
-                         senhas text,
+                         plataformas text not null,
+                         senhas text not null,
                          id_usuario integer,
                          foreign key(id_usuario) references login(id_login))""")
         conectar.commit()
@@ -28,11 +28,9 @@ class login:
         comandos.execute("""insert into login(usuario,senha)
                          values(:usuario,:senha)""",{'usuario':self.usuario,
                                                     'senha':self.senha})
-        #conectar.commit()
-        
-        #comandos.execute("select * from login")
-        #print(comandos.fetchall())
         conectar.commit()
+        
+        
     
     def entrar(self,nome:str,key:str) -> bool:
         self.nome = nome 
@@ -99,7 +97,7 @@ class login:
             metade = (inicio+final)//2 
             chute = listas_usuarios[metade]
 
-            if chute == self.usuario:
+            if chute == self.usuario :
                 return True
             if chute < self.usuario:
                 inicio = metade+1 
