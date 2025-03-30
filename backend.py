@@ -42,26 +42,24 @@ class login:
                                                                         'senha':self.key})
         conectar.commit()
         resultados = comandos.fetchone()
-
-        #conectar.commit()
-
-        try:
-            
-            if(self.nome == resultados[0]
-            and self.key == resultados[1]):
+        
+        match resultados:
+            case (inputuser, inputuser2):
                 return True
+            
+            case _:
+                return False
+        """we can use a simple parttern matching to fix this code, the code works as we want to, however,
+        the bahavior might bring out vulnabilities due to be an error treatment. 
+        Once we are checking if values exists in the database, instead of checking that way, it's possible 
+        to match for patterns. 
         
-        except TypeError:
-            return False
-        
-        #conectar.commit()
+        for instance: if values dosen't return a string literal, the second case could handle this error by 
+        matching the status of the returned value."""
 
-        """possivel vulnerabilidade do codigo fonte, o usuário pode 
-        alterar o código e tentar puxar senhas ou login de outros usuários
-        possível solução: criptografar senhas dos usuários ao deslogar do sistema."""
+        """updated: tested and working without the error handler"""
 
-    
-    def busca(self,usuario:str) ->bool: #busca para autenticar os usuários
+    def busca(self,usuario:str) ->bool:
         self.usuario = usuario 
         indice = 0 
         nomes= 0 

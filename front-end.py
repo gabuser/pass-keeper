@@ -32,7 +32,7 @@ if escolher == '0':
         verificacao = banco.busca(salvar_dados['user'])
         salvar_dados['user'] =verificacao if verificacao else usuario
         salvar_dados['password'] = senha
-        
+
         match (salvar_dados):
             case {"user":data} | {"password":data} if salvar_dados['user'] != "" and salvar_dados['password'] != "" and salvar_dados['user'] !=True:
                 
@@ -51,21 +51,7 @@ if escolher == '0':
             
             case _:
                 print("crie uma conta válida!")
-        """if verificacao:
-            print(f'usuario existente para {usuario}')
-            #continue
-        
-        else:
-            match()
-            senha = input('crie uma senha forte ou g para gerar uma:')
-            if(senha == 'g'):
-                senha = banco.gerar_senha()
-                print(senha)
-
-            banco.criar_conta(usuario,senha)
-            print('conta criada com suscesso!!')
-            break"""
-
+                
 elif escolher == '1':
     while not auth:
         usuario = input('insira seu usuario:')
