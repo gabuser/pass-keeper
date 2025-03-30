@@ -51,7 +51,7 @@ if escolher == '0':
             
             case _:
                 print("crie uma conta válida!")
-                
+
 elif escolher == '1':
     while not auth:
         usuario = input('insira seu usuario:')
@@ -75,11 +75,10 @@ elif escolher == '1':
 
         while(armazenar):
             plataforma = input('insira a plataforma ou q para sair:')
-            ambiguidade = banco.busca(usuario,plataforma)
+            
             if plataforma == 'q':
                 break
-            if(ambiguidade):
-                print('senha já armazenada')
+        
             else:
                 senha = input("insira sua senha ou g para gerar uma:")
             
