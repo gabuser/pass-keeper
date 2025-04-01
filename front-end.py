@@ -86,13 +86,16 @@ elif escolher == '1':
 
                 if senha == 'g':
                     senha = banco.gerar_senha()
-
-                conta.id_(plataforma,usuario,senha,None)
+                
+                conta.addpasswords(plataforma,senha,usuario)
+                #conta.id_(plataforma,usuario,senha,None)
 
     
     elif escolher == '1':
         apagar = True
-        conta.id_(None,usuario,None,apagar)
+        print(usuario)
+        conta.todelete(usuario,apagar)
+        #conta.id_(None,usuario,None,apagar)
         #conta.apagar_conta(usuario)
     
     elif escolher == '2':

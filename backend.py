@@ -150,41 +150,42 @@ class login:
         return self.resultado
 
 class contas(login):
-    def id_(self,plat,nomes:str,armazenar:str,
-            excluir:bool):
-        self.excluir = excluir
+    def todelete(self,user:str,deleted:bool):
+        self.deleted = deleted
 
-        self.nomes = nomes
-        comandos.execute("""select id_login, usuario
+        self.names = user
+        comandos.execute("""select id_login
                          from login where usuario = :usuario""",
-                         {'usuario':self.nomes})
+                         {'usuario':self.names})
         #conectar.commit()
 
         self.foreign_key = comandos.fetchone()[0]
 
-        if(self.excluir):
-            comandos.execute("""delete from conta 
+        comandos.execute("""delete from conta 
                          where id_usuario = :id_usuario""",
                          {'id_usuario':self.foreign_key})
         
-            comandos.execute("""delete from login
-                         where usuario = :usuario """,{'usuario':self.nomes})
+        comandos.execute("""delete from login
+                         where usuario = :usuario """,{'usuario':self.names})
+        conectar.commit()
+    
+    def addpasswords(self,plataform:str,password:str,
+                     user:str):
         
-        else:
-            if(plat !="" and armazenar !=""):
-                comandos.execute("""insert into conta(plataformas,senhas,id_usuario)
-                         values (:plataformas,:senhas,:id_usuario)""",{
-                             'senhas':armazenar, 'id_usuario':self.foreign_key,
-                             'plataformas':plat
-                         } )
-                conectar.commit()
-            else:
-                print("insira dados válidos")
+        if(plataform !="" and password != ""):
+            comandos.execute("""select id_login,usuario from login
+                             where usuario = :usuario""", {"usuario":user})
             
-            """Note: this code needs to be simplify, it's current unreadeble and confuse. 
-            this might lead to futher problems in the future case not updated. a better 
-            function name and a better condition more organized."""
+            self.foreign_key = comandos.fetchone()[0]
+            print(self.foreign_key)
+            conectar.commit()
 
+            comandos.execute("""insert into conta(plataformas,senhas,id_usuario)
+                             values (:plataformas,:senhas,:id_usuario)""",{'senhas':password,
+                             "id_usuario":self.foreign_key, "plataformas":plataform})
+            conectar.commit()
+        else:
+            print("apenas dados válidos")
 
 log =  login()
 conta = contas()
