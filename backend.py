@@ -57,8 +57,29 @@ class login:
         for instance: if values dosen't return a string literal, the second case could handle this error by 
         matching the status of the returned value."""
 
-        """updated: tested and working without the error handler"""
+        """updated: tested and working without the error handler""" 
+    
+    def ambiguity(self, saved_user,password) -> bool:
+        saved_user= saved_user
+        confirm = 0
+        comandos.execute("""select id_login from login
+                         where  usuario= :usuario""",{"usuario":saved_user})
+        
+        check= comandos.fetchone()[0]
+        #conectar.commit()
 
+        comandos.execute("""select plataformas from conta
+                         where id_usuario = :id_usuario and plataformas = :plataformas
+                         """,{"id_usuario":check,"plataformas":password})
+        valor = comandos.fetchone()
+
+        match valor:
+            case [(password)]:
+                return True
+            
+            case _:
+                return False
+        conectar.commit()
     def busca(self,usuario:str) ->bool:
         self.usuario = usuario 
         indice = 0 
@@ -150,12 +171,19 @@ class contas(login):
                          where usuario = :usuario """,{'usuario':self.nomes})
         
         else:
-            comandos.execute("""insert into conta(plataformas,senhas,id_usuario)
+            if(plat !="" and armazenar !=""):
+                comandos.execute("""insert into conta(plataformas,senhas,id_usuario)
                          values (:plataformas,:senhas,:id_usuario)""",{
                              'senhas':armazenar, 'id_usuario':self.foreign_key,
                              'plataformas':plat
                          } )
-        conectar.commit()
+                conectar.commit()
+            else:
+                print("insira dados válidos")
+            
+            """Note: this code needs to be simplify, it's current unreadeble and confuse. 
+            this might lead to futher problems in the future case not updated. a better 
+            function name and a better condition more organized."""
 
 
 log =  login()

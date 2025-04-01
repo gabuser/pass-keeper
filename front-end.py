@@ -75,17 +75,20 @@ elif escolher == '1':
 
         while(armazenar):
             plataforma = input('insira a plataforma ou q para sair:')
-            
+            isequal= backend.conta.ambiguity(usuario, plataforma)
             if plataforma == 'q':
                 break
-        
+
+            elif(isequal):
+                print("senha já existe")
             else:
                 senha = input("insira sua senha ou g para gerar uma:")
-            
+
                 if senha == 'g':
                     senha = banco.gerar_senha()
-            
+
                 conta.id_(plataforma,usuario,senha,None)
+
     
     elif escolher == '1':
         apagar = True
