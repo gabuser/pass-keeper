@@ -12,7 +12,8 @@ class login:
         comandos.execute("""create table if not exists login(
                          id_login integer primary key autoincrement,
                          usuario text not null,
-                         senha text not null
+                         senha text not null,
+                         Email text
                          )""")
         
         comandos.execute("""create table if not exists conta(
@@ -69,11 +70,12 @@ class login:
         #conectar.commit()
 
         comandos.execute("""select plataformas from conta
-                         where id_usuario = :id_usuario and plataformas = :plataformas
-                         """,{"id_usuario":check,"plataformas":password})
-        valor = comandos.fetchone()
-
-        match valor:
+                         inner join login on id_usuario = :id_login
+                         where plataformas = :plataformas""",
+                         {"id_login":check, "plataformas":password})
+        getting= comandos.fetchone()
+        
+        match getting:
             case [(password)]:
                 return True
             
