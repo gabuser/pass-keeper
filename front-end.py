@@ -15,7 +15,7 @@ salvar_dados= {
 }
 
 inicio= ['criar conta','entrar']
-entrada = ['armazenar senhas','apagar conta',"visualizar senhas"]
+entrada = ['armazenar senhas','apagar conta','atualizar',"visualizar senhas"]
 
 for a, c in enumerate(inicio):
     print(f'{a} -{c}')
@@ -27,6 +27,8 @@ if escolher == '0':
 
         usuario = input('crie um usuário:')
         senha = input('crie uma senha forte ou g para gerar uma:')
+        recover = input("insert a email or space to skip:")
+
         salvar_dados['user']= usuario
 
         verificacao = banco.busca(salvar_dados['user'])
@@ -36,13 +38,14 @@ if escolher == '0':
         match (salvar_dados):
             case {"user":data} | {"password":data} if salvar_dados['user'] != "" and salvar_dados['password'] != "" and salvar_dados['user'] !=True:
                 
-                banco.criar_conta(salvar_dados['user'], salvar_dados['password'])
+                banco.criar_conta(salvar_dados['user'], salvar_dados['password'],recover)
                 print("conta criada com sucesso")
                 break
             
             case {"passoword":"g"}:
                 senha = banco.gerar_senha()
-                banco.criar_conta()
+                banco.criar_conta(salvar_dados['user'],senha,
+                                  recover)
                 print("conta criada com sucesso!")
                 break
 
@@ -100,3 +103,31 @@ elif escolher == '1':
     
     elif escolher == '2':
         banco.buscar_senhas(usuario,True,False)
+    
+    elif escolher == '3':
+        updt= input("1:email \n 2:senha \n 3:nome :")
+        
+        if(updt == '1'):
+            email = input("insira o novo email:")
+            
+            if(conta.updating_user(email,updt,usuario)):
+                print("email existente, atualize outro email")
+            
+            else:
+                conta.updating_user(email,updt,usuario)
+        
+        elif(updt == '2'):
+            senha = input("insira a senha:")
+            conta.updating_user(senha,updt,usuario)
+            print("senha alterada com sucesso")
+        
+        elif(updt == '3'):
+            new_name = input("insira o novo nome:")
+
+            notunique = conta.busca(new_name)
+            if(notunique):
+                print("nome existente.")
+            
+            else:
+                conta.updating_user(new_name,updt,usuario)
+                print("nome alterado com sucesso!")

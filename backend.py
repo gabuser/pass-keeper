@@ -5,6 +5,8 @@ import random
 BANCO = 'gerenciador.db'
 conectar = sqlite3.connect(BANCO)
 comandos = conectar.cursor()
+foreign_key = None
+email = None
 
 class login: 
 
@@ -13,7 +15,7 @@ class login:
                          id_login integer primary key autoincrement,
                          usuario text not null,
                          senha text not null,
-                         Email text
+                         Email text 
                          )""")
         
         comandos.execute("""create table if not exists conta(
@@ -23,12 +25,13 @@ class login:
                          foreign key(id_usuario) references login(id_login))""")
         conectar.commit()
     
-    def criar_conta(self,usuario,senha):
+    def criar_conta(self,usuario,senha,mail="null"):
         self.usuario = usuario 
         self.senha = senha
-        comandos.execute("""insert into login(usuario,senha)
-                         values(:usuario,:senha)""",{'usuario':self.usuario,
-                                                    'senha':self.senha})
+        email = mail
+        comandos.execute("""insert into login(usuario,senha,Email)
+                         values(:usuario,:senha,:Email)""",{'usuario':self.usuario,
+                                                    'senha':self.senha, "Email":email})
         conectar.commit()
         
         
@@ -62,7 +65,6 @@ class login:
     
     def ambiguity(self, saved_user,password) -> bool:
         saved_user= saved_user
-        confirm = 0
         comandos.execute("""select id_login from login
                          where  usuario= :usuario""",{"usuario":saved_user})
         
@@ -87,22 +89,7 @@ class login:
         indice = 0 
         nomes= 0 
         listas_usuarios:list= []
-        """if(senhas): #preciso trabalhar nisso aqui, esqueci de apagar ksksksks
-            comandos.execute(select id_login from login
-                             where usuario = :usuario,{'usuario':self.usuario})
-            valor = comandos.fetchone()[0]
-            
-            comandos.execute(select  plataformas from conta
-                             where id_usuario = :id_usuario,{'id_usuario':valor})
-            valor = comandos.fetchall()
-            for c in range(len(valor)):
-                listas_usuarios.append(
-                    valor[indice][0]
-                )
-                indice+=1
-            #print(valor[1][0])"""
-        
-        
+
         comandos.execute("""select usuario from login""")
         valor = comandos.fetchall()
         conectar.commit()
@@ -159,13 +146,12 @@ class contas(login):
         comandos.execute("""select id_login
                          from login where usuario = :usuario""",
                          {'usuario':self.names})
-        #conectar.commit()
-
-        self.foreign_key = comandos.fetchone()[0]
-
+        foreign_key = comandos.fetchone()[0]
+        conectar.commit()
+        
         comandos.execute("""delete from conta 
                          where id_usuario = :id_usuario""",
-                         {'id_usuario':self.foreign_key})
+                         {'id_usuario':foreign_key})
         
         comandos.execute("""delete from login
                          where usuario = :usuario """,{'usuario':self.names})
@@ -174,20 +160,56 @@ class contas(login):
     def addpasswords(self,plataform:str,password:str,
                      user:str):
         
+        foreign_key = None
         if(plataform !="" and password != ""):
             comandos.execute("""select id_login,usuario from login
                              where usuario = :usuario""", {"usuario":user})
             
-            self.foreign_key = comandos.fetchone()[0]
-            print(self.foreign_key)
+            foreign_key = comandos.fetchone()[0]
+            print(foreign_key)
             conectar.commit()
 
             comandos.execute("""insert into conta(plataformas,senhas,id_usuario)
                              values (:plataformas,:senhas,:id_usuario)""",{'senhas':password,
-                             "id_usuario":self.foreign_key, "plataformas":plataform})
+                             "id_usuario":foreign_key, "plataformas":plataform})
             conectar.commit()
         else:
             print("apenas dados válidos")
+    
+    def updating_user(self,account:str,choose,user) ->None:
+        foreign_key = None
+        
+        comandos.execute("""select id_login from login
+                                 where usuario =:usuario""",{'usuario':user})
+        foreign_key= comandos.fetchone()[0]
+        conectar.commit()
+
+        match (choose):
+            case '1':
+                comandos.execute("""select Email from login
+                where id_login =:id_login""",{'id_login':foreign_key})
+                check_email = comandos.fetchone()[0]
+                conectar.commit()
+
+                if(account == check_email):
+                    return True
+                
+                else:
+                    comandos.execute("""update login set Email =:Email
+                                 where id_login =:id_login""",{"Email":account,"id_login":foreign_key})
+                    conectar.commit()
+            
+            case '2':
+                comandos.execute("""update login set senha = :senha
+                                 where id_login = :id_login """,{'senha':account,'id_login':foreign_key})
+                conectar.commit()
+
+            case '3':
+                comandos.execute("""update login set usuario =:usuario
+                                 where id_login = :id_login""",{'usuario':account,'id_login':foreign_key})
+                conectar.commit()
+                
+            
 
 log =  login()
 conta = contas()
