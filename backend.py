@@ -122,13 +122,15 @@ class login:
         id_conta= comandos.fetchmany()[0][1]
         conectar.commit()
         
-        if(todas):
-            comandos.execute("""select plataformas,senhas from conta
+        match todas:
+            case True:
+                comandos.execute("""select plataformas,senhas from conta
                              where id_usuario =:id_usuario""",{"id_usuario":id_conta})
-            dados = comandos.fetchall()
-            conectar.commit()
-            for formatar in dados:
-                print(formatar)
+                dados = comandos.fetchall()
+                conectar.commit()
+                for formatar in dados:
+                    print(formatar)
+            
 
     def gerar_senha(self):
         self.resultado = ''.join(
@@ -191,7 +193,7 @@ class contas(login):
                 check_email = comandos.fetchone()[0]
                 conectar.commit()
 
-                if(account == check_email):
+                if(account == check_email or account == ""):
                     return True
                 
                 else:
