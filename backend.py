@@ -130,8 +130,21 @@ class login:
                 conectar.commit()
                 for formatar in dados:
                     print(formatar)
-            
+    
+    def cheking_emails(self,service):
+        comandos.execute("""select Email from login
+                         where Email in (:Email)""",{"Email":service})
+        try:
+            Emails_returned = comandos.fetchone()[0]
+            print(Emails_returned)
+            conectar.commit()
 
+            if service in Emails_returned:
+                return True
+            else:
+                return False
+        except TypeError:
+            return None
     def gerar_senha(self):
         self.resultado = ''.join(
             random.choices(string.ascii_letters+string.digits+

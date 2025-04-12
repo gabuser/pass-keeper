@@ -3,7 +3,7 @@ import getpass
 banco = backend.log
 conta = backend.conta
 
-inicio= ['criar conta','entrar']
+inicio= ['criar conta','entrar','recuperar conta']
 entrada = ['armazenar senhas','apagar conta','atualizar',"visualizar senhas"]
 
 class interfaces:
@@ -40,9 +40,9 @@ class interfaces:
         while True:
             self.user = input("crie um usuário:")
             account_password = input("insira uma senha ou g para gerar uma:")
-            email = input("coloque o seu email ou enter para pular:")
             iscreated = conta.busca(self.user)
-
+            self.creating_email()
+            
             match iscreated:
                 case True:
                     print(f"usuário existente para {self.user}")
@@ -56,11 +56,11 @@ class interfaces:
                     if(account_password == 'g'):
                         generated_password = conta.gerar_senha()
                         conta.criar_conta(self.user,generated_password,
-                                          email)
+                                          self.email)
                         break
                     
                     else:
-                        conta.criar_conta(self.user,account_password,email)
+                        conta.criar_conta(self.user,account_password,self.email)
                         break
                 
     def authentication(self) -> bool:
@@ -159,6 +159,32 @@ class interfaces:
     def deleting(self):
             conta.todelete(self.user,self.deleted)
     
+    def creating_email(self):
+        while True:
+            create_email = input("criar um email s ou n:")
+            if(create_email == 's'):
+                self.email = input("insira um email válido:")
+                self.isemail = conta.cheking_emails(self.email)
+
+                match self.isemail:
+                    case True:
+                        print("email já existe :(")
+                    
+                    case False:
+                        print("email criado com sucesso!!")
+                        break
+                    
+                    case None:
+                        print("email criado com sucesso!!")
+                        break
+            
+            if(create_email == 'n'):
+                self.email = None
+                break
+            
+            else:
+                print("insira um valor válido")
+    
     def updating(self):
             while(self.toupdate):
                 updt= input("1:email \n 2:senha \n 3:nome \n q to quit :")
@@ -166,14 +192,15 @@ class interfaces:
                 match updt:
 
                     case '1':
-                        email = input("insira o novo email:")
+                        #email = input("insira o novo email:")
+                        self.creating_email()
 
-                        if (conta.updating_user(email,updt,self.user) 
-                            or email ==""):
+                        if (conta.updating_user(self.email,updt,self.user) 
+                            or self.email ==""):
                             print("possível erro:\n 1: dados existentes \n 2:dados foram deixados em branco")
                         
                         else:
-                            conta.updating_user(email,updt,self.user)
+                            conta.updating_user(self.email,updt,self.user)
                     
                     case '2' if updt :
                         password= input("insira a nova senha:")
@@ -324,3 +351,4 @@ class interfaces:
 main = interfaces()
 
 main.main()
+#reminder to fix the email issue, it's duplicating emails, it can't be accept duplicate emails all.
