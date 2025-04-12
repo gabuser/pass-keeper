@@ -1,6 +1,7 @@
 import sqlite3 
 import string 
 import random 
+import smtplib,ssl
 
 BANCO = 'gerenciador.db'
 conectar = sqlite3.connect(BANCO)
@@ -15,7 +16,8 @@ class login:
                          id_login integer primary key autoincrement,
                          usuario text not null,
                          senha text not null,
-                         Email text 
+                         Email text,
+                         gmail password text
                          )""")
         
         comandos.execute("""create table if not exists conta(
@@ -223,8 +225,46 @@ class contas(login):
                 comandos.execute("""update login set usuario =:usuario
                                  where id_login = :id_login""",{'usuario':account,'id_login':foreign_key})
                 conectar.commit()
-                
+    
+    def recovering(self,user:str):
+            port = 465
+            security = ssl.create_default_context()
+
+            comandos.execute("""select Email, gmail from login
+                         where usuario in (:usuario)""",{"usuario":user})
+            datas= comandos.fetchall()
+            #g = comandos.fetchall()[0][1]
+            #gmail = comandos.fetchone()[1]
+            #sender = "random@gmail.com"
+            conectar.commit()
+
+            gmail_pass= datas[0][1]
+            email= datas[0][0]
             
+            with smtplib.SMTP_SSL("smtp.gmail.com", port,context=security) as mini_server:
+                mini_server.login(email,gmail_pass)
+                mini_server.sendmail("random@gmail.com",email,f" ignore caso nao tenha pedido {self.gerar_senha()}")
+            
+            print("email enviado com sucesso!!")
+    
+    def saving_gmail_pass(self,user,gmail_password):
+        self.gmail_password = gmail_password
+        print("essa senha é usada para permitir que este programa possa se comunicar " \
+        "com a API do gmail google e possa enviar emails")
+        foreign_key = None 
+
+        try:
+            comandos.execute("""select id_login from login
+                         where usuario in (:usuario)""",{"usuario":user})
+            foreign_key = comandos.fetchone()[0]
+            conectar.commit()
+
+            comandos.execute("""update login set gmail = :gmail
+                             where id_login = :id_login""",{"id_login":foreign_key, "gmail":self.gmail_password}) 
+            conectar.commit()      
+        except TypeError:
+            print("usuário não existe")
+
 
 log =  login()
 conta = contas()

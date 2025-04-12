@@ -3,7 +3,7 @@ import getpass
 banco = backend.log
 conta = backend.conta
 
-inicio= ['criar conta','entrar','recuperar conta']
+inicio= ['criar conta','entrar','recuperar conta','atualizar a senha gmail.com']
 entrada = ['armazenar senhas','apagar conta','atualizar',"visualizar senhas"]
 
 class interfaces:
@@ -35,6 +35,15 @@ class interfaces:
                 self.creating()
             case '1':
                 self.user_interface()
+            
+            case '2':
+                #self.user = input("insira o seu usuário:")
+                self.recovered()
+            case '3':
+                #self.recovered()
+                self.user = input("insira o seu usuário:")
+                gmail_password = input("insira a sua senha do gmail:")
+                conta.saving_gmail_pass(self.user,gmail_password)
     
     def creating(self):
         while True:
@@ -225,6 +234,10 @@ class interfaces:
                     
                     case _:
                         print("por favor, insira uma das opções")
+    
+    def recovered(self):
+            users = input("insira o seu usuário:")
+            conta.recovering(users)
             """match self.isequal:
 
                 case True:
