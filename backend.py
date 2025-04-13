@@ -233,20 +233,27 @@ class contas(login):
             comandos.execute("""select Email, gmail from login
                          where usuario in (:usuario)""",{"usuario":user})
             datas= comandos.fetchall()
-            #g = comandos.fetchall()[0][1]
-            #gmail = comandos.fetchone()[1]
-            #sender = "random@gmail.com"
-            conectar.commit()
 
-            gmail_pass= datas[0][1]
-            email= datas[0][0]
-            
-            with smtplib.SMTP_SSL("smtp.gmail.com", port,context=security) as mini_server:
-                mini_server.login(email,gmail_pass)
-                mini_server.sendmail("random@gmail.com",email,f" ignore caso nao tenha pedido {self.gerar_senha()}")
-            
-            print("email enviado com sucesso!!")
-    
+            conectar.commit()
+            """try:
+                gmail_pass= datas[0][1]
+                email= datas[0][0]
+            except IndexError:
+                print("valor não existe")"""
+            if(datas):
+                email = datas[0][0]
+                gmail_pass = datas[0][1]
+
+                try:
+                    with smtplib.SMTP_SSL("smtp.gmail.com", port,context=security) as mini_server:
+                        mini_server.login(email,gmail_pass)
+                        mini_server.sendmail("random@gmail.com",email,f" ignore caso nao tenha pedido {self.gerar_senha()}")
+                    
+                    print("email enviado com sucesso!!")
+                    
+                except smtplib.SMTPAuthenticationError:
+                    print("API do google recusou essa conexão, verifique o email e a senha da API")
+
     def saving_gmail_pass(self,user,gmail_password):
         self.gmail_password = gmail_password
         print("essa senha é usada para permitir que este programa possa se comunicar " \
