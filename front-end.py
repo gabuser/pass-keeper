@@ -11,7 +11,6 @@ class interfaces:
         self.verificacao = None
         self.auth = None
         self.armazenar = True
-        #self.plataforma = None
         self.apagar = False
         self.ambiguidade = None
         self.isequal = False
@@ -24,26 +23,34 @@ class interfaces:
         "user":str,
         "password":str
         }
-        for a, c in enumerate(inicio):
-            print(f'{a}-{c}')
     
     def user_input(self):
-        self.options = input("escolha uma das opções:")
-        
-        match str(self.options):
-            case '0':
-                self.creating()
-            case '1':
-                self.user_interface()
+        while True:
+            for a, c in enumerate(inicio):
+                print(f'{a}-{c}')
             
-            case '2':
-                #self.user = input("insira o seu usuário:")
-                self.recovered()
-            case '3':
-                #self.recovered()
-                self.user = input("insira o seu usuário:")
-                gmail_password = input("insira a sua senha do gmail:")
-                conta.saving_gmail_pass(self.user,gmail_password)
+            self.options = input("escolha uma das opções ou q para sair:")
+        
+            match str(self.options):
+                case '0':
+                    self.creating()
+                case '1':
+                    self.user_interface()
+            
+                case '2':
+                    self.recovered()
+                
+                case '3':
+
+                    self.user = input("insira o seu usuário:")
+                    gmail_password = input("insira a sua senha do gmail:")
+                    conta.saving_gmail_pass(self.user,gmail_password)
+                
+                case 'q':
+                    break
+
+                case _:
+                    print("\n insira uma das opções válidas")
     
     def creating(self):
         while True:
@@ -83,11 +90,9 @@ class interfaces:
             match self.auth:
 
                 case True:
-                    #print(f'bem vindo {self.user}')
                     return True
                 
                 case False:
-                    #print("senha incorreta, tente novamente ou mais tarde")
                     return False
     
     def user_interface(self):
@@ -127,9 +132,6 @@ class interfaces:
             password = None
             self.isequal = conta.ambiguity(self.user,self.plataforma)
 
-            #if self.isequal:
-             #   print("senha já existe")
-
             match self.plataforma:
 
                 case 'q':
@@ -149,21 +151,6 @@ class interfaces:
                         conta.addpasswords(self.plataforma, password,self.user)
                 case _:
                     print("senha já existe")
-            """else:
-                match (self.plataforma):
-
-                    case (self.plataforma) if self.plataforma !="":
-                        password = input("crie uma senha ou g para gerar uma:")
-
-                        if password == 'g':
-                            generated = conta.gerar_senha()
-                            conta.addpasswords(self.plataforma,generated,self.user)
-                        
-                        else:
-                            conta.addpasswords(self.plataforma,password, self.user)
-
-                    case "q":
-                        self.armazenar = False"""
     
     def deleting(self):
             conta.todelete(self.user,self.deleted)
@@ -201,7 +188,6 @@ class interfaces:
                 match updt:
 
                     case '1':
-                        #email = input("insira o novo email:")
                         self.creating_email()
 
                         if (conta.updating_user(self.email,updt,self.user) 
@@ -238,130 +224,9 @@ class interfaces:
     def recovered(self):
             users = input("insira o seu usuário:")
             conta.recovering(users)
-            """match self.isequal:
 
-                case True:
-                    print("usuário não pode salvar duas senhas da mesma plataforma")
-                
-                case False:
-                    self.password = input("insira sua senha ou g para gerar uma:")
-
-                    if(self.password == 'g' and self.password !=""):
-                        genereted = conta.gerar_senha()
-                        conta.addpasswords(self.plataforma,genereted,self.user)
-                    
-                    elif(self.password!= "g" and self.password != ""):
-                        conta.addpasswords(self.plataforma,self.password,self.user)
-                    
-                    else:
-                        print("")"""
     def main(self):
         self.user_input()
-""""match escolher:
-    case '0':
-        while True:
-            usuario = input('crie um usuário:')
-            senha = input('crie uma senha forte ou g para gerar uma:')
-            recover = input("insert a email or space to skip:")
-
-            salvar_dados['user']= usuario
-
-            verificacao = banco.busca(salvar_dados['user'])
-            salvar_dados['user'] =verificacao if verificacao else usuario
-            salvar_dados['password'] = senha
-
-            match (salvar_dados):
-                case {"user":data} | {"password":data} if salvar_dados['user'] != "" and salvar_dados['password'] != "" and salvar_dados['user'] !=True:
-                
-                    banco.criar_conta(salvar_dados['user'], salvar_dados['password'],recover)
-                    print("conta criada com sucesso")
-                    break
-            
-                case {"passoword":"g"}:
-                    senha = banco.gerar_senha()
-                    banco.criar_conta(salvar_dados['user'],senha,
-                                  recover)
-                    print("conta criada com sucesso!")
-                    break
-
-                case {"user": True}:
-                    print(f"usuário existente para {usuario}")
-            
-                case _:
-                    print("crie uma conta válida!")
-
-#elif escolher == '1':
-    case '1':
-        while not auth:
-            usuario = input('insira seu usuario:')
-            senha = input('insira sua senha:')
-
-            auth = banco.entrar(usuario,senha)
-
-            if auth:
-                print(f'bem vindo {usuario}')
-            
-            #conta.id_(usuario)
-            else:
-                print('ops, senha ou usuario incorreto.')
-        #continue
-    
-        for c, a in enumerate(entrada):
-            print(f'{c}- {a}')
-
-        opcao = input('escolha sua opção:')
-        #if opcao == '0':
-        match opcao:
-            case '0':
-                while(armazenar):
-                    plataforma = input('insira a plataforma ou q para sair:')
-                    isequal= backend.conta.ambiguity(usuario, plataforma)
-                    if plataforma == 'q':
-                        break
-
-                    elif(isequal):
-                        print("senha já existe")
-                    else:
-                        senha = input("insira sua senha ou g para gerar uma:")
-
-                        if senha == 'g':
-                            senha = banco.gerar_senha()
-                            
-                            conta.addpasswords(plataforma,senha,usuario)
-                #conta.id_(plataforma,usuario,senha,None)
-            case '1':
-                deleted = True
-                conta.todelete(usuario,deleted)
-            
-            case '2':
-                updt= input("1:email \n 2:senha \n 3:nome :")
-
-                if(updt == '1'):
-                    email = input("insira o novo email:")
-            
-                    if(conta.updating_user(email,updt,usuario)):
-                        print("email existente, atualize outro email")
-            
-                    else:
-                        conta.updating_user(email,updt,usuario)
-                
-                elif(updt == '2'):
-                    senha = input("insira a senha:")
-                    conta.updating_user(senha,updt,usuario)
-                    print("senha alterada com sucesso")
-                
-                elif(updt == '3'):
-                    new_name = input("insira o novo nome:")
-                    notunique = conta.busca(new_name)
-                    if(notunique):
-                        print("nome existente.")
-            
-                    else:
-                        conta.updating_user(new_name,updt,usuario)
-                        print("nome alterado com sucesso!")"""
-
 
 main = interfaces()
-
 main.main()
-#reminder to fix the email issue, it's duplicating emails, it can't be accept duplicate emails all.

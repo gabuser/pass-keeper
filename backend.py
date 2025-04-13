@@ -233,13 +233,8 @@ class contas(login):
             comandos.execute("""select Email, gmail from login
                          where usuario in (:usuario)""",{"usuario":user})
             datas= comandos.fetchall()
-
             conectar.commit()
-            """try:
-                gmail_pass= datas[0][1]
-                email= datas[0][0]
-            except IndexError:
-                print("valor não existe")"""
+
             if(datas):
                 email = datas[0][0]
                 gmail_pass = datas[0][1]
@@ -250,7 +245,7 @@ class contas(login):
                         mini_server.sendmail("random@gmail.com",email,f" ignore caso nao tenha pedido {self.gerar_senha()}")
                     
                     print("email enviado com sucesso!!")
-                    
+
                 except smtplib.SMTPAuthenticationError:
                     print("API do google recusou essa conexão, verifique o email e a senha da API")
 
