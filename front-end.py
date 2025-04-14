@@ -121,12 +121,15 @@ class interfaces:
                     case '2':
                         self.updating()
                     
+                    case '3':
+                        self.see()
                     case _:
                         print("nenhuma opção foi selecionada")
         else:
             print("senha ou usuário incorreto")
 
     def storage_password(self):
+        self.armazenar = True
         while(self.armazenar):
             self.plataforma = input("insira a plataforma ou q para sair:")
             password = None
@@ -150,7 +153,7 @@ class interfaces:
                     else:
                         conta.addpasswords(self.plataforma, password,self.user)
                 case _:
-                    print("senha já existe")
+                    print("valor não válido")
     
     def deleting(self):
             conta.todelete(self.user,self.deleted)
@@ -224,6 +227,23 @@ class interfaces:
     def recovered(self):
             users = input("insira o seu usuário:")
             conta.recovering(users)
+    
+    def see(self):
+        choose = input("procurar senha ou t para ver todas as senhas:")
+
+        match choose:
+
+            case "t":
+                conta.buscar_senhas(self.user,True,None)
+            
+            case 'p':
+                senha = input("nome da plataforma que deseja buscar:")
+                
+                conta.buscar_senhas(self.user,False,senha)
+            
+            case _:
+                print("opção inválida, escolha pelo menos umas das opções")
+        
 
     def main(self):
         self.user_input()

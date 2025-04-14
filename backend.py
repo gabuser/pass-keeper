@@ -117,22 +117,40 @@ class login:
                 final = metade-1
         return False
     
-    def buscar_senhas(self,usuario:str,todas:bool, especifica:str):
-
-        comandos.execute("""select usuario, id_login from login
-                         where usuario = :usuario """, {"usuario":usuario})
-        id_conta= comandos.fetchmany()[0][1]
+    def buscar_senhas(self,usuario:str,busca:str,senha:str):
+        foreign_key = None
+        lists_passwords = []
+        
+        comandos.execute("""select id_login from login
+                         where usuario = :usuario""", {"usuario":usuario})
+        foreign_key= comandos.fetchone()[0]
         conectar.commit()
         
-        match todas:
+        match busca:
             case True:
-                comandos.execute("""select plataformas,senhas from conta
-                             where id_usuario =:id_usuario""",{"id_usuario":id_conta})
-                dados = comandos.fetchall()
+                comandos.execute("""select distinct plataformas, senhas from conta
+                                 inner join login on id_usuario= :id_login
+                                """, {"id_login":foreign_key})
+                #print(comandos.fetchall())
+                datas = comandos.fetchall()
                 conectar.commit()
-                for formatar in dados:
-                    print(formatar)
-    
+
+                for b,a in datas:
+                    print(f"\n {b}: {a}")
+            
+            case False:
+                datas = None
+                #foreign_key = None
+                comandos.execute("""select distinct senhas from conta
+                                 inner join login on id_usuario = :id_login
+                                 where plataformas in (:plataformas)""",
+                                {"id_login":foreign_key, "plataformas":senha})
+                
+                datas = comandos.fetchone()[0]
+                conectar.commit()
+
+                print(f"{senha}:{datas}")
+
     def cheking_emails(self,service):
         comandos.execute("""select Email from login
                          where Email in (:Email)""",{"Email":service})
@@ -147,6 +165,7 @@ class login:
                 return False
         except TypeError:
             return None
+        
     def gerar_senha(self):
         self.resultado = ''.join(
             random.choices(string.ascii_letters+string.digits+
