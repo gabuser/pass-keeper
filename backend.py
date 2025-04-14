@@ -146,10 +146,14 @@ class login:
                                  where plataformas in (:plataformas)""",
                                 {"id_login":foreign_key, "plataformas":senha})
                 
-                datas = comandos.fetchone()[0]
-                conectar.commit()
+                try:
+                    datas = comandos.fetchone()[0]
+                    conectar.commit()
 
-                print(f"{senha}:{datas}")
+                    print(f"{senha}:{datas}")
+                
+                except TypeError:
+                    print("\n nenhuma senha encontrada")
 
     def cheking_emails(self,service):
         comandos.execute("""select Email from login
