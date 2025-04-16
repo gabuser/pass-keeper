@@ -12,3 +12,4 @@ https://myaccount.google.com/apppasswords
 para habilitar o banco de dados, por favor baixe a versão mais recente do sqlite para poder usar, caso contrário, o programa pode apresentar erros inesperados.
 
 ainda irei escrever uma readme decente :) 
+desconsidere o arquivo "front-end.py" e baixe apenas o "frontend.py" de qualquer jeito, o programa vai usar o arquivo correto, apenas para que não se confunda. 
