@@ -218,7 +218,6 @@ class contas(login):
     
     def updating_user(self,account:str,choose,user) ->None:
         foreign_key = None
-        
         comandos.execute("""select id_login from login
                                  where usuario =:usuario""",{'usuario':user})
         foreign_key= comandos.fetchone()[0]
@@ -252,43 +251,70 @@ class contas(login):
     def recovering(self,user:str):
             port = 465
             security = ssl.create_default_context()
+            send = True
 
             comandos.execute("""select Email, gmail from login
                          where usuario in (:usuario)""",{"usuario":user})
             datas= comandos.fetchall()
             conectar.commit()
-
+            
             if(datas):
                 email = datas[0][0]
                 gmail_pass = datas[0][1]
 
                 try:
-                    with smtplib.SMTP_SSL("smtp.gmail.com", port,context=security) as mini_server:
-                        mini_server.login(email,gmail_pass)
-                        mini_server.sendmail("random@gmail.com",email,f" ignore caso nao tenha pedido {self.gerar_senha()}")
+                    try:
+                        with smtplib.SMTP_SSL("smtp.gmail.com", port,context=security) as mini_server:
+                            mini_server.login(email,gmail_pass)
+                            CODE = self.gerar_senha()
+                            mini_server.sendmail("random@gmail.com",email,f"{CODE}")
+                            print("email enviado com sucesso!!")
+                            send = True
+
+                    except smtplib.SMTPResponseException:
+                        print("erro, a conexão foi fechada isso ocorre pois: \n1 não foi encontrado nenhum email ou senha\n 2 email incorreto \n 3 senha incorreta")
+                        send = False
                     
-                    print("email enviado com sucesso!!")
+                    while send:
+                        insert_code = input("insira o código enviado em seu email:")
 
+                        if(insert_code == "q"):
+                            break
+
+                        elif(insert_code == CODE):
+                            new_password = input("insira a sua nova senha:")
+                            self.updating_user(new_password,'2',user)
+                            print("senha alterada com sucesso!!")
+                            break
+
+                        else:
+                            print("Código incorreto, olhe o seu email")
                 except smtplib.SMTPAuthenticationError:
-                    print("API do google recusou essa conexão, verifique o email e a senha da API")
+                    print("API do google recusou essa conexão, verifique a senha da API e email")
 
-    def saving_gmail_pass(self,user,gmail_password):
-        self.gmail_password = gmail_password
-        print("essa senha é usada para permitir que este programa possa se comunicar " \
+    def saving_gmail_pass(self,user,password):
+        print("\n essa senha é usada para permitir que este programa possa se comunicar " \
         "com a API do gmail google e possa enviar emails")
         foreign_key = None 
 
-        try:
-            comandos.execute("""select id_login from login
-                         where usuario in (:usuario)""",{"usuario":user})
-            foreign_key = comandos.fetchone()[0]
-            conectar.commit()
-
-            comandos.execute("""update login set gmail = :gmail
-                             where id_login = :id_login""",{"id_login":foreign_key, "gmail":self.gmail_password}) 
-            conectar.commit()      
-        except TypeError:
-            print("usuário não existe")
+        
+        comandos.execute("""select id_login from login
+                         where usuario in (:usuario) and senha in (:senha)""",{"usuario":user,
+                                                                           "senha":password})
+        foreign_key = comandos.fetchone()
+        conectar.commit()
+        #print(foreign_key[0])
+        if foreign_key:
+                self.gmail_password = input("insira a nova senha do app password:")
+                
+                comandos.execute("""update login set gmail = :gmail
+                             where id_login = :id_login""",{"gmail":self.gmail_password,"id_login":foreign_key[0]}) 
+                
+                conectar.commit()
+                return True
+            
+        else:
+            return False
 
 
 log =  login()
