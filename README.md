@@ -13,3 +13,4 @@ para habilitar o banco de dados, por favor baixe a versão mais recente do sqlit
 
 ainda irei escrever uma readme decente :) 
 desconsidere o arquivo "front-end.py" e baixe apenas o "frontend.py" de qualquer jeito, o programa vai usar o arquivo correto, apenas para que não se confunda. 
+ainda falta bastante coisa que irei implementar, mas queria deixar público. 
