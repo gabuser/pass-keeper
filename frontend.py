@@ -42,8 +42,8 @@ class interfaces:
                 
                 case '3':
 
-                    self.user = input("insira o seu usuário:")
-                    password = input("insira a sua senha:")
+                    self.user = input("insira o seu usuário ou ctrl+c para sair:")
+                    password = input("insira a sua senha ou ctrl+c para sair:")
                     isauth=conta.saving_gmail_pass(self.user,password)
 
                     if(isauth):
@@ -59,8 +59,8 @@ class interfaces:
     
     def creating(self):
         while True:
-            self.user = input("\n crie um usuário:")
-            account_password = input("\n insira uma senha ou g para gerar uma:")
+            self.user = input("\n crie um usuário ou ctrl+c para sair:")
+            account_password = input("\n insira uma senha ou g para gerar uma ou ctrl+c para sair:")
             iscreated = conta.busca(self.user)
             self.creating_email()
             
@@ -87,8 +87,8 @@ class interfaces:
     def authentication(self) -> bool:
         self.auth = False
         while (not self.auth):
-            self.user = input("\n insira o seu usuário:")
-            self.senha = input("\n insira sua senha:")
+            self.user = input("\n insira o seu usuário ou ctrl+c para sair:")
+            self.senha = input("\n insira sua senha ou ctrl+c para sair:")
 
             self.auth = banco.entrar(self.user,self.senha)
 
@@ -109,7 +109,7 @@ class interfaces:
                 for a,c in enumerate(entrada):
                     print(f"\n {a}-{c}")
                 
-                options = input("\n insira a sua opção ou q para sair:")
+                options = input("\n insira a sua opção ou q para sair ou ctrl+c para sair:")
                 
                 match options:
 
@@ -136,7 +136,7 @@ class interfaces:
     def storage_password(self):
         self.armazenar = True
         while(self.armazenar):
-            self.plataforma = input("\n insira a plataforma ou q para sair:")
+            self.plataforma = input("\n insira a plataforma ou q para sair ou ctrl+c para sair:")
             password = None
             self.isequal = conta.ambiguity(self.user,self.plataforma)
 
@@ -146,7 +146,7 @@ class interfaces:
                     self.armazenar = False
                 
                 case self.plataforma if self.plataforma !='':
-                    password = input("\n insira uma senha ou g para gerar uma:")
+                    password = input("\n insira uma senha ou g para gerar uma ou ctrl+c para sair:")
 
                     if(password == 'g' and not self.isequal):
                         generated = conta.gerar_senha()
@@ -165,7 +165,7 @@ class interfaces:
     
     def creating_email(self):
         while True:
-            create_email = input("\n criar um email s ou n:")
+            create_email = input("\n criar um email s ou n ou ctrl+c para sair:")
             if(create_email == 's'):
                 self.email = input("\n insira um email válido:")
                 self.isemail = conta.cheking_emails(self.email)
@@ -192,7 +192,7 @@ class interfaces:
     def updating(self):
             self.toupdate= True
             while(self.toupdate):
-                updt= input("1:email \n 2:senha \n 3:nome \n q to quit :")
+                updt= input("1:email \n 2:senha \n 3:nome \n q to quit ou ctrl+c para sair :")
 
                 match updt:
 
@@ -233,12 +233,12 @@ class interfaces:
                         print("\n por favor, insira uma das opções")
     
     def recovered(self):
-            users = input("\n insira o seu usuário:")
+            users = input("\n insira o seu usuário ou ctrl+c para sair:")
             #password = input("insira a sua senha:")
             conta.recovering(users)
     
     def see(self):
-        choose = input("\n procurar senha aperte p ou t para ver todas as senhas:")
+        choose = input("\n procurar senha aperte p ou t para ver todas as senhas ou ctrl+c para sair:")
 
         match choose:
 
@@ -246,7 +246,7 @@ class interfaces:
                 conta.buscar_senhas(self.user,True,None)
             
             case 'p':
-                senha = input("\n nome da plataforma que deseja buscar:")
+                senha = input("\n nome da plataforma que deseja buscar ou ctrl+c para sair:")
                 
                 conta.buscar_senhas(self.user,False,senha)
             
