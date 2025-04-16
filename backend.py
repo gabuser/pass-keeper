@@ -119,7 +119,6 @@ class login:
     
     def buscar_senhas(self,usuario:str,busca:str,senha:str):
         foreign_key = None
-        lists_passwords = []
         
         comandos.execute("""select id_login from login
                          where usuario = :usuario""", {"usuario":usuario})
@@ -257,7 +256,7 @@ class contas(login):
                          where usuario in (:usuario)""",{"usuario":user})
             datas= comandos.fetchall()
             conectar.commit()
-            
+
             if(datas):
                 email = datas[0][0]
                 gmail_pass = datas[0][1]
