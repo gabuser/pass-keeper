@@ -2,12 +2,14 @@ import sqlite3
 import string 
 import random 
 import smtplib,ssl
+import safe
 
 BANCO = 'gerenciador.db'
 conectar = sqlite3.connect(BANCO)
 comandos = conectar.cursor()
 foreign_key = None
 email = None
+saf = safe.saving
 
 class login: 
 
@@ -17,12 +19,13 @@ class login:
                          usuario text not null,
                          senha text not null,
                          Email text,
-                         gmail password text
+                         gmail password text,
+                         salt text
                          )""")
         
         comandos.execute("""create table if not exists conta(
-                         plataformas text not null,
-                         senhas text not null,
+                         plataformas text,
+                         senhas text,
                          id_usuario integer,
                          foreign key(id_usuario) references login(id_login))""")
         conectar.commit()
@@ -31,9 +34,10 @@ class login:
         self.usuario = usuario 
         self.senha = senha
         email = mail
-        comandos.execute("""insert into login(usuario,senha,Email)
-                         values(:usuario,:senha,:Email)""",{'usuario':self.usuario,
-                                                    'senha':self.senha, "Email":email})
+        salt = saf.salting()
+        comandos.execute("""insert into login(usuario,senha,Email,salt)
+                         values(:usuario,:senha,:Email,:salt)""",{'usuario':self.usuario,
+                                                    'senha':self.senha, "Email":email, "salt":salt})
         conectar.commit()
         
         
@@ -86,6 +90,7 @@ class login:
             case _:
                 return False
         conectar.commit()
+
     def busca(self,usuario:str) ->bool:
         self.usuario = usuario 
         indice = 0 
@@ -95,6 +100,7 @@ class login:
         comandos.execute("""select usuario from login""")
         valor = comandos.fetchall()
         conectar.commit()
+        
         for c in range(len(valor)):
                 listas_usuarios.append(
                 valor[indice][nomes])
@@ -214,7 +220,7 @@ class contas(login):
             conectar.commit()
         else:
             print("apenas dados válidos")
-    
+        
     def updating_user(self,account:str,choose,user) ->None:
         foreign_key = None
         comandos.execute("""select id_login from login
@@ -314,7 +320,93 @@ class contas(login):
             
         else:
             return False
+    
+    def isstorage(self,user):
+        self.parsing= []
 
+        foreign_key = None
+
+        comandos.execute("""select id_login from login
+                         where usuario in (:usuario)""",{'usuario':user})
+        
+        foreign_key = comandos.fetchone()[0]
+        #conectar.commit()
+        #print(foreign_key)
+        conectar.commit()
+
+        comandos.execute("""select senhas,plataformas from conta
+                        inner join login on id_usuario = :id_login""",{"id_login":foreign_key})
+        
+        self.password= comandos.fetchall()
+
+        comandos.execute("""select salt from login
+                         where id_login in(:id_login)""",{'id_login':foreign_key})
+        
+        self.salt = comandos.fetchone()[0]
+        conectar.commit()
+
+        if self.password:
+
+            return True
+        
+        else:
+            return False
+        """função para verificar se há dados armazenados no gerenciador, se os dados
+        estiverem armazenados, significa que o usuário já tem a chave criptográfica, caso 
+        contrário é necessário criar um. a função retornará false ou true"""
+    
+    def isencripted(self,user):
+        foreign_key = None
+
+        if(self.isstorage(user)):
+
+            comandos.execute("""select id_login from login
+                             where usuario in (:usuario)""",{'usuario':user})
+            
+            foreign_key = comandos.fetchone()[0]
+
+            match self.password:
+
+                case self.password if type(self.password[0][0]) == bytes :
+
+                    saf.unlocking(self.password,self.salt)
+
+                    for _ in range(len(saf.decript)):
+                        converted= saf.decript[_]
+                        plataforms = saf.plataforms[_]
+
+                        comandos.execute("""update conta set senhas = :senhas
+                                         where id_usuario in (:id_usuario)
+                                         and plataformas in (:plataformas)""", {'plataformas':plataforms,
+                                                                                'id_usuario':foreign_key,
+                                                                                'senhas':converted})
+                        conectar.commit()
+                    
+                    return True
+                        
+                case self.password if type(self.password[0][0]) == str:
+
+                    saf.locking(self.password,self.salt)
+
+                    for _ in range(len(saf.encripted)):
+                        binary = saf.encripted[_]
+                        plataforms = saf.plataforms[_]
+
+                        comandos.execute("""update conta set senhas = :senhas
+                                         where id_usuario in (:id_usuario) 
+                                         and plataformas in (:plataformas)""",
+                                         {'plataformas':plataforms, 'id_usuario':foreign_key,
+                                          'senhas':binary})
+                        conectar.commit()
+                    
+                    return False
+                    
+        else:
+            return True
+        
+            """função que vamos criar para verificar se um valor está encriptado ou não
+            para isso ele vai utilizar como base apenas um valor e verificar se o tipo dele corresponde 
+            com o valor encriptado ou não. ainda precisa de testes mais aprofundados"""
 
 log =  login()
 conta = contas()

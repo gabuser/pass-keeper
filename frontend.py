@@ -105,6 +105,7 @@ class interfaces:
 
         if(self.response):
             print(f"bem vindo {self.user}")
+            
             while(True):
                 for a,c in enumerate(entrada):
                     print(f"\n {a}-{c}")
@@ -128,6 +129,10 @@ class interfaces:
                     
                     case '3':
                         self.see()
+                    
+                    #case '4':
+                        #u = self.user
+                        #conta.isencripted(self.user)
                     case _:
                         print("\n nenhuma opção foi selecionada")
         else:
@@ -135,30 +140,34 @@ class interfaces:
 
     def storage_password(self):
         self.armazenar = True
-        while(self.armazenar):
-            self.plataforma = input("\n insira a plataforma ou q para sair ou ctrl+c para sair:")
-            password = None
-            self.isequal = conta.ambiguity(self.user,self.plataforma)
+        isdecript = conta.isencripted(self.user)
 
-            match self.plataforma:
+        if(isdecript):
+            while(self.armazenar):
+                self.plataforma = input("\n insira a plataforma ou q para sair ou ctrl+c para sair:")
+                password = None
+                self.isequal = conta.ambiguity(self.user,self.plataforma)
 
-                case 'q':
-                    self.armazenar = False
+                match self.plataforma:
+
+                    case 'q':
+                        self.armazenar = False
+                        conta.isencripted(self.user)
                 
-                case self.plataforma if self.plataforma !='':
-                    password = input("\n insira uma senha ou g para gerar uma ou ctrl+c para sair:")
+                    case self.plataforma if self.plataforma !='':
+                        password = input("\n insira uma senha ou g para gerar uma ou ctrl+c para sair:")
 
-                    if(password == 'g' and not self.isequal):
-                        generated = conta.gerar_senha()
-                        conta.addpasswords(self.plataforma,generated,self.user)
+                        if(password == 'g' and not self.isequal):
+                            generated = conta.gerar_senha()
+                            conta.addpasswords(self.plataforma,generated,self.user)
                     
-                    elif(self.isequal):
-                        print("\n senha já existe")
+                        elif(self.isequal):
+                            print("\n senha já existe")
 
-                    else:
-                        conta.addpasswords(self.plataforma, password,self.user)
-                case _:
-                    print("\n valor não válido")
+                        else:
+                            conta.addpasswords(self.plataforma, password,self.user)
+                    case _:
+                        print("\n valor não válido")
     
     def deleting(self):
             conta.todelete(self.user,self.deleted)
