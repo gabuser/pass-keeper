@@ -12,9 +12,11 @@ class Object_bytes:
         letters = ''.join(string.ascii_letters+string.digits+
                           string.punctuation)
         
-        password = ''.join(random.choices(letters,k=50))
-        
-        return password
+        self.password = ''.join(random.choices(letters,k=50))
+        print(f'sua senha é: {self.password} \n')
+        print('\n senha única para criptografar e descriptografar guarde em um lugar seguro. Caso você perder essa senha,' \
+        'não será possível recupera-la, essa senha não deve ser guardada nesse banco!!')
+        #return password
     
     def salting(self):
         self.salt = os.urandom(16)
@@ -36,10 +38,10 @@ class processing(Object_bytes):
     def locking(self,data,salt):
         self.encripted=[]
         self.plataforms = []
-        print("senha única, guarde em algum lugar, não guarde nesse banco. \n")
+        #print("senha única, guarde em algum lugar, não guarde nesse banco. \n")
 
-        self.password =self.key_password()
-        print(self.password)
+        #self.password =self.key_password()
+        #print(self.password)
         self.generating(self.password,salt)
         self.key = Fernet(self.hashed)
 
@@ -72,9 +74,13 @@ class processing(Object_bytes):
                 self.decript.append(self.tobedecrypt.decode())
                 self.plataforms.append(_[1])
 
-            print(type(self.decript[0]))
+            #print(type(self.decript[0]))
+            return True
+        
         except:
-            print("token inválido, verifique a senha. se voce perdeu ou não tem mais acesso, será necessário" 
+            print("\n token inválido, verifique a senha. se voce perdeu ou não tem mais acesso, será necessário" 
             "por segurança deletar todos os seus dados e criar as senhas novamente.")
+            
+            return False
 
 saving = processing()

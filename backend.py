@@ -39,8 +39,7 @@ class login:
                          values(:usuario,:senha,:Email,:salt)""",{'usuario':self.usuario,
                                                     'senha':self.senha, "Email":email, "salt":salt})
         conectar.commit()
-        
-        
+        saf.key_password()
     
     def entrar(self,nome:str,key:str) -> bool:
         self.nome = nome 
@@ -368,8 +367,8 @@ class contas(login):
             match self.password:
 
                 case self.password if type(self.password[0][0]) == bytes :
-
-                    saf.unlocking(self.password,self.salt)
+                    
+                    unlocked=saf.unlocking(self.password,self.salt)
 
                     for _ in range(len(saf.decript)):
                         converted= saf.decript[_]
@@ -382,8 +381,12 @@ class contas(login):
                                                                                 'senhas':converted})
                         conectar.commit()
                     
-                    return True
-                        
+                    if(unlocked):
+                        return True
+                    
+                    else:
+                        return False
+                    
                 case self.password if type(self.password[0][0]) == str:
 
                     saf.locking(self.password,self.salt)
@@ -400,6 +403,9 @@ class contas(login):
                         conectar.commit()
                     
                     return False
+                
+                #case _:
+                 #   return False
                     
         else:
             return True

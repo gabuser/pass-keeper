@@ -247,21 +247,28 @@ class interfaces:
             conta.recovering(users)
     
     def see(self):
-        choose = input("\n procurar senha aperte p ou t para ver todas as senhas ou ctrl+c para sair:")
+            isdecript = conta.isencripted(self.user)
+            #print(isdecript)
+            if(isdecript):
+                choose = input("\n procurar senha aperte p ou t para ver todas as senhas ou ctrl+c para sair:")
 
-        match choose:
+                match choose:
 
-            case "t":
-                conta.buscar_senhas(self.user,True,None)
+                    case "t":
+                        conta.buscar_senhas(self.user,True,None)
+                        conta.isencripted(self.user)
             
-            case 'p':
-                senha = input("\n nome da plataforma que deseja buscar ou ctrl+c para sair:")
+                    case 'p':
+                        senha = input("\n nome da plataforma que deseja buscar ou ctrl+c para sair:")
                 
-                conta.buscar_senhas(self.user,False,senha)
+                        conta.buscar_senhas(self.user,False,senha)
+                        conta.isencripted(self.user)
             
-            case _:
-                print("\n opção inválida, escolha pelo menos umas das opções")
-        
+                    case _:
+                        print("\n opção inválida, escolha pelo menos umas das opções")
+            """else:
+                self.response = True
+                self.user_interface()"""
 
     def main(self):
         self.user_input()
