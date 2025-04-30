@@ -61,9 +61,10 @@ class interfaces:
         while True:
             self.user = input("\n crie um usuário ou ctrl+c para sair:")
             account_password = input("\n insira uma senha ou g para gerar uma ou ctrl+c para sair:")
+            
             iscreated = conta.busca(self.user)
             self.creating_email()
-            
+
             match iscreated:
                 case True:
                     print(f"\n usuário existente para {self.user}")

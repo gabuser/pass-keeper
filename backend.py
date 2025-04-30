@@ -92,20 +92,16 @@ class login:
 
     def busca(self,usuario:str) ->bool:
         self.usuario = usuario 
-        indice = 0 
-        nomes= 0 
         listas_usuarios:list= []
 
         comandos.execute("""select usuario from login""")
         valor = comandos.fetchall()
-        conectar.commit()
+
+        for _ in  range(len(valor)):
+            listas_usuarios.append(
+                valor[_][0])
         
-        for c in range(len(valor)):
-                listas_usuarios.append(
-                valor[indice][nomes])
-            
-                indice+=1
-        
+        listas_usuarios= sorted(listas_usuarios)
         inicio = 0 
         final = len(listas_usuarios)-1 
 
@@ -115,6 +111,7 @@ class login:
 
             if chute == self.usuario :
                 return True
+            
             if chute < self.usuario:
                 inicio = metade+1 
             
