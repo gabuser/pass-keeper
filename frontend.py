@@ -78,6 +78,12 @@ class interfaces:
                         generated_password = conta.gerar_senha()
                         conta.criar_conta(self.user,generated_password,
                                           self.email)
+                        
+                        print("\nATENÇÃO, SENHA DO LOGIN ABAIXO:\n")
+
+                        print("-"*50)
+                        print(f'senha senha é: {generated_password}\n')
+                        print("-"*50)
                         break
                     
                     else:
@@ -94,10 +100,10 @@ class interfaces:
 
             match self.auth:
 
-                case True:
+                case self.auth:
                     return True
                 
-                case False:
+                case _:
                     return False
     
     def user_interface(self):
