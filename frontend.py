@@ -3,7 +3,7 @@ import getpass
 banco = backend.log
 conta = backend.conta
 
-inicio= ['criar conta','entrar','recuperar conta','atualizar a senha gmail.com']
+inicio= ['criar conta','entrar','recuperar conta','app passwords']
 entrada = ['armazenar senhas','apagar conta','atualizar',"visualizar senhas"]
 
 class interfaces:
@@ -80,7 +80,7 @@ class interfaces:
                         conta.criar_conta(self.user,generated_password,
                                           self.email)
                         
-                        print("\nATENÇÃO, SENHA DO LOGIN ABAIXO:\n")
+                        print("\nATENÇÃO, A SENHA DO LOGIN ABAIXO:\n")
 
                         print("-"*50)
                         print(f'senha senha é: {generated_password}\n')
@@ -101,15 +101,15 @@ class interfaces:
 
             match self.auth:
 
-                case self.auth:
+                case True:
                     return True
                 
-                case _:
+                case False:
                     return False
     
     def user_interface(self):
         self.response = self.authentication()
-
+        
         if(self.response):
             print(f"bem vindo {self.user}")
             
@@ -208,7 +208,8 @@ class interfaces:
     def updating(self):
             self.toupdate= True
             while(self.toupdate):
-                updt= input("1:email \n 2:senha \n 3:nome \n q to quit ou ctrl+c para sair :")
+                updt= input("1:email \n 2:senha de login \n 3:usuario \n" \
+                " 4:plataforma \n 5:senha da plataforma \n q to quit ou ctrl+c para sair :")
 
                 match updt:
 
@@ -242,6 +243,11 @@ class interfaces:
                             print("\n valor vázio, coloque um valor")
                         else:
                             conta.updating_user(new_name,updt,self.user)
+                    
+                    case '4':
+                        self.plataforma = input("\n insira o nome da plataforma(netflix,amazon...):")
+
+                        conta.updating_user(self.plataforma,updt,self.user)
                     case 'q':
                         self.toupdate = False
                     

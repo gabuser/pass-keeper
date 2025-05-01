@@ -49,15 +49,23 @@ class login:
         comandos.execute("""select usuario,senha from login
                          where usuario =:usuario and senha = :senha""",{'usuario':self.nome,
                                                                         'senha':self.key})
-        conectar.commit()
+        #conectar.commit()
+
         resultados = comandos.fetchone()
-        
+
         match resultados:
-            case (inputuser, inputuser2):
+            
+            case(input1,input2):
                 return True
             
             case _:
                 return False
+        """"match resultados:
+            case (input1,input2) if resultados != None or resultados !='':
+                print(input1)
+            
+            case _:
+                return False"""
         """we can use a simple parttern matching to fix this code, the code works as we want to, however,
         the bahavior might bring out vulnabilities due to be an error treatment. 
         Once we are checking if values exists in the database, instead of checking that way, it's possible 
@@ -248,7 +256,7 @@ class contas(login):
                 comandos.execute("""update login set usuario =:usuario
                                  where id_login = :id_login""",{'usuario':account,'id_login':foreign_key})
                 conectar.commit()
-    
+                
     def recovering(self,user:str):
             port = 465
             security = ssl.create_default_context()
