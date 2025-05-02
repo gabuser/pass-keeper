@@ -5,8 +5,12 @@ conta = backend.conta
 
 inicio= ['criar conta','entrar','recuperar conta','app passwords']
 entrada = ['armazenar senhas','apagar conta','atualizar',"visualizar senhas"]
+erro_atualizacao = ['verifique se os dados foram digitados corretamente','verifique se o valor já existe',
+                    'verifique se você não deixou os valores em branco']
 
+#class called interface to represent the interface or the front-end of the program
 class interfaces:
+    #init function to initialize a reserved space that will be used in the memory
     def __init__(self) ->None:
         self.verificacao = None
         self.auth = None
@@ -19,11 +23,11 @@ class interfaces:
         #self.choose = True
         self.user =None
 
-        self.salvar_dados= {
-        "user":str,
-        "password":str
-        }
+        """obs: it's possible to reduce most of the reserved space to optimize the program
+        since all those variables are just being used temporarily and 
+        take up space in memory to hold values."""
     
+    #function that will handle with the user's input and manage the output
     def user_input(self):
         while True:
             for a, c in enumerate(inicio):
@@ -246,8 +250,19 @@ class interfaces:
                     
                     case '4':
                         self.plataforma = input("\n insira o nome da plataforma(netflix,amazon...):")
+                        
+                        confirmation = conta.updating_user(self.plataforma,updt,self.user)
 
-                        conta.updating_user(self.plataforma,updt,self.user)
+                        if(confirmation):
+                            print("atualizado com sucesso")
+                        
+                        else:
+                            print("#"*50)
+                            for a,b in enumerate(erro_atualizacao):
+                                print(f'\n {a+1}:{b}\n')
+                            
+                            print("ERROR")
+                            print('#'*50)
                     case 'q':
                         self.toupdate = False
                     

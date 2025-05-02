@@ -256,6 +256,40 @@ class contas(login):
                 comandos.execute("""update login set usuario =:usuario
                                  where id_login = :id_login""",{'usuario':account,'id_login':foreign_key})
                 conectar.commit()
+            
+            case '4':
+                comandos.execute("""select plataformas from conta
+                                 inner join login on id_usuario =:id_login
+                                 and plataformas in(:plataformas)""",{
+                                     'id_login':foreign_key,'plataformas':account
+                                 })
+                
+                try:
+                    plataform= comandos.fetchone()[0]
+                    new_plataform= input("insira a nova plataforma:")
+
+                    if(plataform != new_plataform
+                       and new_plataform !=''):
+                        
+                        comandos.execute("""select senhas from conta 
+                                         where plataformas in(:plataformas)
+                                         and id_usuario in(:id_usuario)""",
+                                         {'plataformas':plataform,'id_usuario':foreign_key})
+                        unique_password = comandos.fetchone()[0]
+                        conectar.commit()
+
+                        comandos.execute("""update conta set plataformas =:plataformas
+                                         where senhas in(:senhas)""",{
+                                            'plataformas':new_plataform,'senhas':unique_password})
+                        conectar.commit()
+
+                        return True
+                    
+                    else:
+                        return False
+                
+                except:
+                    return False
                 
     def recovering(self,user:str):
             port = 465
