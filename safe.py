@@ -58,7 +58,7 @@ class processing(Object_bytes):
         
         #return temp
         #print(self.token)
-
+        
     def unlocking(self,data,salt):
         self.decript = []
         self.plataforms = []
@@ -70,10 +70,11 @@ class processing(Object_bytes):
             self.key = Fernet(self.hashed)
 
             for _ in data:
+                
                 self.tobedecrypt= self.key.decrypt(_[0])
                 self.decript.append(self.tobedecrypt.decode())
                 self.plataforms.append(_[1])
-
+            #print(self.decript)
             #print(type(self.decript[0]))
             return True
         

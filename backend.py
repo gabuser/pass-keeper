@@ -290,7 +290,51 @@ class contas(login):
                 
                 except:
                     return False
+            
+            case '5':
+                comandos.execute("""select plataformas from conta
+                                 inner join login on id_usuario =:id_login
+                                 where plataformas in (:plataformas)""",
+                                 {'id_login':foreign_key,'plataformas':account})
                 
+                oldpass=comandos.fetchone()
+                
+                if(oldpass):
+                    new_password = input("insira a sua nova senha:")
+
+                    if(new_password != ''):
+                        comandos.execute("""select senhas,plataformas from conta
+                                         inner join login on id_usuario=:id_login
+                                         where plataformas in (:plataformas)""",
+                                         {'id_login':foreign_key, 'plataformas':oldpass[0]})
+                        pattern = comandos.fetchall()
+                        
+                        match pattern:
+                            case pattern if type(pattern[0][0]) == bytes:
+                                comandos.execute("""select salt from login
+                                                 where id_login in (:id_login)""",{'id_login':foreign_key})
+                                salt= comandos.fetchone()[0]
+
+                                saf.unlocking(pattern,salt)
+                                updatedpass = new_password
+                                plataforms = pattern[0][1]
+                                datas = [(updatedpass,plataforms)]
+                                
+                                saf.locking(datas,salt)
+                                newencription = saf.encripted[0]
+
+                                comandos.execute("""update conta set senhas =:senhas
+                                                 where id_usuario in (:id_usuario)
+                                                 and plataformas in (:plataformas)""",{
+                                                     'senhas':newencription,'id_usuario':foreign_key,'plataformas':plataforms
+                                                 })
+                                conectar.commit()
+                    #passord = self.isencripted(user)
+                    else:
+                        print('\n insira um senha válida')
+                else:
+                    print('\n não há nenhuma senha com esse nome')
+                    
     def recovering(self,user:str):
             port = 465
             security = ssl.create_default_context()
@@ -368,9 +412,8 @@ class contas(login):
                          where usuario in (:usuario)""",{'usuario':user})
         
         foreign_key = comandos.fetchone()[0]
+
         #conectar.commit()
-        #print(foreign_key)
-        conectar.commit()
 
         comandos.execute("""select senhas,plataformas from conta
                         inner join login on id_usuario = :id_login""",{"id_login":foreign_key})
@@ -381,7 +424,7 @@ class contas(login):
                          where id_login in(:id_login)""",{'id_login':foreign_key})
         
         self.salt = comandos.fetchone()[0]
-        conectar.commit()
+        #conectar.commit()
 
         if self.password:
 
@@ -395,8 +438,8 @@ class contas(login):
     
     def isencripted(self,user):
         foreign_key = None
-
-        if(self.isstorage(user)):
+        valid = self.isstorage(user)
+        if(valid):
 
             comandos.execute("""select id_login from login
                              where usuario in (:usuario)""",{'usuario':user})

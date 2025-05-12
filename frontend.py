@@ -263,6 +263,12 @@ class interfaces:
                             
                             print("ERROR")
                             print('#'*50)
+                    
+                    case '5':
+                        
+                        new_password = input("insira o nome da plataforma:")
+                        conta.updating_user(new_password,updt,self.user)
+
                     case 'q':
                         self.toupdate = False
                     
