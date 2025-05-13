@@ -153,33 +153,36 @@ class interfaces:
         self.armazenar = True
         isdecript = conta.isencripted(self.user)
 
-        if(isdecript):
-            while(self.armazenar):
-                self.plataforma = input("\n insira a plataforma ou q para sair ou ctrl+c para sair:")
-                password = None
-                self.isequal = conta.ambiguity(self.user,self.plataforma)
+        try:
+            if(isdecript):
+                while(self.armazenar):
+                    self.plataforma = input("\n insira a plataforma ou q para sair ou ctrl+c para sair:")
+                    password = None
+                    self.isequal = conta.ambiguity(self.user,self.plataforma)
 
-                match self.plataforma:
+                    match self.plataforma:
 
-                    case 'q':
-                        self.armazenar = False
-                        conta.isencripted(self.user)
+                        case 'q':
+                            self.armazenar = False
+                            conta.isencripted(self.user)
                 
-                    case self.plataforma if self.plataforma !='':
-                        password = input("\n insira uma senha ou g para gerar uma ou ctrl+c para sair:")
+                        case self.plataforma if self.plataforma !='':
+                            password = input("\n insira uma senha ou g para gerar uma ou ctrl+c para sair:")
 
-                        if(password == 'g' and not self.isequal):
-                            generated = conta.gerar_senha()
-                            conta.addpasswords(self.plataforma,generated,self.user)
+                            if(password == 'g' and not self.isequal):
+                                generated = conta.gerar_senha()
+                                conta.addpasswords(self.plataforma,generated,self.user)
                     
-                        elif(self.isequal):
-                            print("\n senha já existe")
+                            elif(self.isequal):
+                                print("\n senha já existe")
 
-                        else:
-                            conta.addpasswords(self.plataforma, password,self.user)
-                    case _:
-                        print("\n valor não válido")
-    
+                            else:
+                                conta.addpasswords(self.plataforma, password,self.user)
+                        case _:
+                            print("\n valor não válido")
+        except KeyboardInterrupt:
+            conta.isencripted(self.user)
+
     def deleting(self):
             conta.todelete(self.user,self.deleted)
     

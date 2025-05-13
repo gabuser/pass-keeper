@@ -208,22 +208,28 @@ class contas(login):
     
     def addpasswords(self,plataform:str,password:str,
                      user:str):
-        
+               
         foreign_key = None
+            
         if(plataform !="" and password != ""):
             comandos.execute("""select id_login,usuario from login
                              where usuario = :usuario""", {"usuario":user})
             
             foreign_key = comandos.fetchone()[0]
-            print(foreign_key)
+            #print(foreign_key)
             conectar.commit()
-
+        
             comandos.execute("""insert into conta(plataformas,senhas,id_usuario)
                              values (:plataformas,:senhas,:id_usuario)""",{'senhas':password,
                              "id_usuario":foreign_key, "plataformas":plataform})
             conectar.commit()
+            
         else:
             print("apenas dados válidos")
+
+        
+        #except KeyboardInterrupt:
+            
         
     def updating_user(self,account:str,choose,user) ->None:
         foreign_key = None
@@ -288,7 +294,7 @@ class contas(login):
                     else:
                         return False
                 
-                except:
+                except TypeError:
                     return False
             
             case '5':
