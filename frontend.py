@@ -74,7 +74,7 @@ class interfaces:
                     print(f"\n usuário existente para {self.user}")
                 
                 case False:
-
+                    #print(account_password)
                     if(self.user == '' or account_password == ''):
                         print("insira usuários válidos")
                         continue
@@ -91,9 +91,12 @@ class interfaces:
                         print("-"*50)
                         break
                     
-                    else:
+                    if len(account_password)>=6:
                         conta.criar_conta(self.user,account_password,self.email)
                         break
+                    
+                    else:
+                        print('senha precisa ter pelo menos 6 ou mais caracteres')
                 
     def authentication(self) -> bool:
         self.auth = False
