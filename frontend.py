@@ -75,8 +75,12 @@ class interfaces:
                 
                 case False:
                     #print(account_password)
-                    if(self.user == '' or account_password == ''):
-                        print("insira usuários válidos")
+                    if(len(self.user) *'' == '' or len(account_password)*'' == ''
+                       or len(account_password)< 6):
+                        
+                        print("1: verifique se o usuário foi deixado em branco \n" \
+                        "2: verifique se a senha foi deixado em branco \n" \
+                        "3: verifique se a senha tem menos de 6 caracteres")
                         continue
                     
                     if(account_password == 'g'):
@@ -91,12 +95,9 @@ class interfaces:
                         print("-"*50)
                         break
                     
-                    if len(account_password)>=6:
+                    else:
                         conta.criar_conta(self.user,account_password,self.email)
                         break
-                    
-                    else:
-                        print('senha precisa ter pelo menos 6 ou mais caracteres')
                 
     def authentication(self) -> bool:
         self.auth = False
