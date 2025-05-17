@@ -64,26 +64,43 @@ class interfaces:
     def creating(self):
         while True:
             self.user = input("\n crie um usuário ou ctrl+c para sair:")
-            account_password = input("\n insira uma senha ou g para gerar uma ou ctrl+c para sair:")
+            account_password = input("\n insira uma senha ou aperte enter para gerar uma ou ctrl+c para sair:")
             
             iscreated = conta.busca(self.user)
             self.creating_email()
 
+            blank_lines= self.user.split(" ")
+            last_word= len(blank_lines)-1
+
+            if(blank_lines[0]=='' and blank_lines[last_word]
+               =='' or blank_lines !=''):
+                self.user=[_  for _ in blank_lines if _ !='']
+                self.user = ' '.join(self.user)
+            
+            
+
+            #if(len(self.user)>1):
+            #tam = len(self.user)
+            #teste = ' '.join(self.user[0:tam]) 
+            #print(self.user)
+            #print(len(self.user)*'' == '')
+            #print(len(self.user)*'' == '')
+            #print(len(self.user)*""=="") should not be used
+                #print(self.user)
+            
             match iscreated:
                 case True:
                     print(f"\n usuário existente para {self.user}")
                 
                 case False:
-                    #print(account_password)
-                    if(len(self.user) *'' == '' or len(account_password)*'' == ''
-                       or len(account_password)< 6):
-                        
-                        print("1: verifique se o usuário foi deixado em branco \n" \
-                        "2: verifique se a senha foi deixado em branco \n" \
-                        "3: verifique se a senha tem menos de 6 caracteres")
-                        continue
                     
-                    if(account_password == 'g'):
+                    if(self.user == ''):
+                        print("1: verifique se o usuário foi deixado em branco \n" \
+                        "\n2: verifique se a senha foi deixado em branco \n" \
+                        "\n3: verifique se a senha tem menos de 6 caracteres")
+                        #continue
+                    
+                    elif(account_password) == '':
                         generated_password = conta.gerar_senha()
                         conta.criar_conta(self.user,generated_password,
                                           self.email)
