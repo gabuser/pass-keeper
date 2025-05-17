@@ -3,6 +3,7 @@ import string
 import random 
 import smtplib,ssl
 import safe
+import hash
 
 BANCO = 'gerenciador.db'
 conectar = sqlite3.connect(BANCO)
@@ -10,6 +11,7 @@ comandos = conectar.cursor()
 foreign_key = None
 email = None
 saf = safe.saving
+hashh = hash.hashing()
 
 class login: 
 
@@ -35,27 +37,45 @@ class login:
         self.senha = senha
         email = mail
         salt = saf.salting()
+        
+        hashh.generating_hash(self.senha.encode())
+        salt_hash = hashh.creating_salt()
+        final_hash = hashh.adding_salt(salt_hash)
+
         comandos.execute("""insert into login(usuario,senha,Email,salt)
                          values(:usuario,:senha,:Email,:salt)""",{'usuario':self.usuario,
-                                                    'senha':self.senha, "Email":email, "salt":salt})
+                                                    'senha':final_hash, "Email":email, "salt":salt})
         conectar.commit()
         saf.key_password()
     
-    def entrar(self,nome:str,key:str) -> bool:
+    def entrar(self,nome:str,input_password:str) -> bool:
         self.nome = nome 
-        self.key = key 
+        self.input_password= input_password 
         resultados:str
 
-        comandos.execute("""select usuario,senha from login
-                         where usuario =:usuario and senha = :senha""",{'usuario':self.nome,
-                                                                        'senha':self.key})
+        """comandos.execute(select usuario,senha from login
+                         where usuario =:usuario and senha = :senha,{'usuario':self.nome,
+                                                                                      'senha':self.key})"""
+        comandos.execute("""select id_login from login
+                         where usuario in(:usuario)""",{'usuario':self.nome})
+        foreign_key = comandos.fetchone()
+
+        if(foreign_key):
+
+            comandos.execute("""select senha from login
+                         where id_login in (:id_login)""",{
+                             'id_login':foreign_key[0]
+                         })
         #conectar.commit()
+            password= comandos.fetchone()[0]
+            result= hashh.authentication_hash(self.input_password.encode(),password)
 
-        resultados = comandos.fetchone()
-
-        match resultados:
+        else:
+            result = False
+        
+        match result:
             
-            case(input1,input2):
+            case result if result:
                 return True
             
             case _:
