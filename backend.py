@@ -274,8 +274,12 @@ class contas(login):
                     conectar.commit()
             
             case '2':
+                hashh.generating_hash(account.encode())
+                updating_salt = hashh.creating_salt()
+                new_hash = hashh.adding_salt(updating_salt)
+
                 comandos.execute("""update login set senha = :senha
-                                 where id_login = :id_login """,{'senha':account,'id_login':foreign_key})
+                                 where id_login = :id_login """,{'senha':new_hash,'id_login':foreign_key})
                 conectar.commit()
 
             case '3':
