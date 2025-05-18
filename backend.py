@@ -262,10 +262,10 @@ class contas(login):
             case '1':
                 comandos.execute("""select Email from login
                 where id_login =:id_login""",{'id_login':foreign_key})
-                check_email = comandos.fetchone()[0]
-                conectar.commit()
+                self.check_email = comandos.fetchone()[0]
+                #conectar.commit()
 
-                if(account == check_email or account == ""):
+                if(account == self.check_email):
                     return True
                 
                 else:
@@ -521,7 +521,22 @@ class contas(login):
             """função que vamos criar para verificar se um valor está encriptado ou não
             para isso ele vai utilizar como base apenas um valor e verificar se o tipo dele corresponde 
             com o valor encriptado ou não. ainda precisa de testes mais aprofundados"""
+    
+    def deleting_passwords(self):
+        confirmation = True
+        datas = list()
+        removing_blank_lines = None
+        
+        while confirmation:
+            values= input("insira o nome da plataforma(netflix, amazon,hbo,google...):")
+            
+            if(values =='q'):
+                confirmation = False
+                
+            datas.append(values)
 
+        removing_blank_lines = [_ for _ in datas if _ != ""]
+        print(removing_blank_lines)
 log =  login()
 conta = contas()
 #conta.apagar_conta('gabriel')

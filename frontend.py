@@ -4,7 +4,7 @@ banco = backend.log
 conta = backend.conta
 
 inicio= ['criar conta','entrar','recuperar conta','app passwords']
-entrada = ['armazenar senhas','apagar conta','atualizar',"visualizar senhas"]
+entrada = ['armazenar senhas','apagar conta','atualizar',"visualizar senhas","apagar senhas"]
 erro_atualizacao = ['verifique se os dados foram digitados corretamente','verifique se o valor já existe',
                     'verifique se você não deixou os valores em branco']
 
@@ -95,12 +95,10 @@ class interfaces:
                 case False:
                     
                     if(self.user == ''):
-                        print("1: verifique se o usuário foi deixado em branco \n" \
-                        "\n2: verifique se a senha foi deixado em branco \n" \
-                        "\n3: verifique se a senha tem menos de 6 caracteres")
+                        print("1: verifique se o usuário foi deixado em branco \n")
                         #continue
                     
-                    elif(account_password) == '':
+                    elif(account_password) == '':#precisa ser arrumado, contém vulnerabilidade.
                         generated_password = conta.gerar_senha()
                         conta.criar_conta(self.user,generated_password,
                                           self.email)
@@ -113,7 +111,7 @@ class interfaces:
                         break
                     
                     else:
-                        conta.criar_conta(self.user,account_password,self.email)
+                        conta.criar_conta(self.user,account_password,self.create_email)
                         break
                 
     def authentication(self) -> bool:
@@ -162,6 +160,8 @@ class interfaces:
                     case '3':
                         self.see()
                     
+                    case '4':
+                        self.delete_password()
                     #case '4':
                         #u = self.user
                         #conta.isencripted(self.user)
@@ -209,12 +209,25 @@ class interfaces:
     
     def creating_email(self):
         while True:
-            create_email = input("\n criar um email s ou n ou ctrl+c para sair:")
-            if(create_email == 's'):
-                self.email = input("\n insira um email válido:")
-                self.isemail = conta.cheking_emails(self.email)
+            self.create_email = input("\n criar um email ou enter para continuar ou ctrl+c para sair:")
+            #if(create_email == 's'):
+            #self.email = input("\n insira um email válido:")
+            create_email = self.create_email.split(" ")
+            lenght_email = len(create_email)-1
 
-                match self.isemail:
+            if(create_email[0]=="" and create_email[lenght_email]==""
+               or create_email[0] != "" ):
+                
+                deleting_blank = [_ for _ in create_email if _ !="" ]
+                self.create_email = ''.join(deleting_blank)
+                #print('essa condição foi satisfeita')
+            
+            #else:
+             #   self.create_email
+            
+            self.isemail = conta.cheking_emails(self.create_email)
+
+            match self.isemail:
                     case True:
                         print("\n email já existe :(")
                     
@@ -223,33 +236,38 @@ class interfaces:
                         break
                     
                     case None:
-                        print("\n email criado com sucesso!!")
+                        #print("\n conta criado com sucesso!!")
+                        if(self.create_email ==''):
+                            self.create_email = None
                         break
+                
             
-            if(create_email == 'n'):
+            """if(create_email == 'n'):
                 self.email = None
                 break
             
             else:
-                print("\n insira um valor válido")
+                print("\n insira um valor válido")"""
     
     def updating(self):
             self.toupdate= True
             while(self.toupdate):
-                updt= input("1:email \n 2:senha de login \n 3:usuario \n" \
-                " 4:plataforma \n 5:senha da plataforma \n q to quit ou ctrl+c para sair :")
+                updt= input("\n 1:email \n 2:senha de login \n 3:usuario " \
+                "\n 4:plataforma \n 5:senha da plataforma \n \n q to quit ou ctrl+c para sair :")
 
                 match updt:
 
                     case '1':
                         self.creating_email()
 
-                        if (conta.updating_user(self.email,updt,self.user) 
-                            or self.email ==""):
+                        if (conta.updating_user(self.create_email,updt,self.user)):
+                            #print(conta.updating_user(self.create_email,updt,self.user))
+                            #print(self.create_email)
                             print("\n possível erro:\n 1: dados existentes \n 2:dados foram deixados em branco")
                         
                         else:
-                            conta.updating_user(self.email,updt,self.user)
+                            conta.updating_user(self.create_email,updt,self.user)
+                            print("\n email atualizado com sucesso!")
                     
                     case '2' if updt :
                         password= input("\n insira a nova senha:")
@@ -278,15 +296,15 @@ class interfaces:
                         confirmation = conta.updating_user(self.plataforma,updt,self.user)
 
                         if(confirmation):
-                            print("atualizado com sucesso")
+                            print("\n atualizado com sucesso")
                         
                         else:
                             print("#"*50)
                             for a,b in enumerate(erro_atualizacao):
-                                print(f'\n {a+1}:{b}\n')
+                                print(f'{a+1}:{b}\n')
                             
                             print("ERROR")
-                            print('#'*50)
+                            print('# \n'*50)
                     
                     case '5':
                         
@@ -327,6 +345,9 @@ class interfaces:
             """else:
                 self.response = True
                 self.user_interface()"""
+    
+    def delete_password(self):
+        conta.deleting_passwords()
 
     def main(self):
         self.user_input()
