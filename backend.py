@@ -47,6 +47,7 @@ class login:
                                                     'senha':final_hash, "Email":email, "salt":salt})
         conectar.commit()
         saf.key_password()
+        self.returned = saf.password
     
     def entrar(self,nome:str,input_password:str) -> bool:
         self.nome = nome 

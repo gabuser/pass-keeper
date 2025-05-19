@@ -31,13 +31,20 @@ class interfaces:
     def user_input(self):
         while True:
             for a, c in enumerate(inicio):
-                print(f'\n {a}-{c}')
+                print(f'{a}-{c}')
             
             self.options = input("\n escolha uma das opções ou q para sair:")
         
             match str(self.options):
                 case '0':
                     self.creating()
+
+                    print("#"*50)
+                    print("\n SENHA PARA CRIPTOGRAFAR E DESCRIPTOGRAFAR OS SEUS DADOS QUE SÃO ARMAZENADOS!")
+                    print("\n ATENÇÃO: caso você perder essa senha, não será mais possível recuperar as senhas \n")
+                    print(f"\n senha: {conta.returned}\n")
+                    print("#"*50)
+
                 case '1':
                     self.user_interface()
             
@@ -64,7 +71,7 @@ class interfaces:
     def creating(self):
         while True:
             self.user = input("\n crie um usuário ou ctrl+c para sair:")
-            account_password = input("\n insira uma senha ou aperte enter para gerar uma ou ctrl+c para sair:")
+            self.account_password = input("\n insira uma senha ou aperte enter para gerar uma ou ctrl+c para sair:")
             
             iscreated = conta.busca(self.user)
             self.creating_email()
@@ -72,7 +79,7 @@ class interfaces:
             blank_lines= self.user.split(" ")
             last_word= len(blank_lines)-1
 
-            blank_lines_password = account_password.split(" ")
+            blank_lines_password = self.account_password.split(" ")
             
             last_word_pass = len(blank_lines_password)-1
 
@@ -85,8 +92,8 @@ class interfaces:
                 self.user=[_  for _ in blank_lines if _ !='']
                 self.user = ' '.join(self.user)
 
-                account_password=[_ for _ in blank_lines_password if _ != ""]
-                account_password = ' '.join(account_password)
+                self.account_password=[_ for _ in blank_lines_password if _ != ""]
+                self.account_password = ' '.join(self.account_password)
             #if(len(self.user)>1):
             #tam = len(self.user)
             #teste = ' '.join(self.user[0:tam]) 
@@ -103,24 +110,24 @@ class interfaces:
                 case False:
                     
                     if(self.user == ''):
-                        print("1: verifique se o usuário foi deixado em branco \n")
+                        print("\n ERROR:verifique se o usuário foi deixado em branco")
                         #continue
                     
-                    elif(account_password) == '':#precisa ser arrumado, contém vulnerabilidade.
-                        generated_password = conta.gerar_senha()
-                        conta.criar_conta(self.user,generated_password,
+                    elif(self.account_password) == '':#precisa ser arrumado, contém vulnerabilidade.
+                        self.generated_password = conta.gerar_senha()
+
+                        conta.criar_conta(self.user,self.generated_password,
                                           self.create_email)
                         
-                        print("\nATENÇÃO, SENHA QUE FOI GERADO AUTOMATICAMENTE, ELA É USADA PARA VOCÊ LOGAR:\n")
-
-                        print("#"*50,"\n")
-                        print(f'senha senha é: {generated_password}\n')
-                        print("#"*50,"\n")
-                        #print("\n ATENÇÃO, SENHA QUE FOI GERADO AUTOMATICAMENTE, ELA É USADA PARA VOCÊ LOGAR ")
+                        print("\nATENÇÃO: SENHA QUE FOI GERADO AUTOMATICAMENTE, ELA É USADA PARA VOCÊ LOGAR:\n")
+                        print("#"*50,)
+                        print(f'sua senha é: {self.generated_password}\n')
+                        #print("#"*50)
+                        #print("\n ATENÇÃO, SENHA QUE FOI GERADO AUTOMATICAMENTE, ELA É USADA PARA VOCÊ LOGAR\n")
                         break
                     
                     else:
-                        conta.criar_conta(self.user,account_password,self.create_email)
+                        conta.criar_conta(self.user,self.account_password,self.create_email)
                         break
                 
     def authentication(self) -> bool:
