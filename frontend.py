@@ -72,13 +72,21 @@ class interfaces:
             blank_lines= self.user.split(" ")
             last_word= len(blank_lines)-1
 
+            blank_lines_password = account_password.split(" ")
+            
+            last_word_pass = len(blank_lines_password)-1
+
             if(blank_lines[0]=='' and blank_lines[last_word]
-               =='' or blank_lines !=''):
+               =='' or blank_lines !=''
+               and blank_lines_password[0] == ''
+               and blank_lines_password[last_word_pass] == ''
+               or blank_lines_password!=''):
+                
                 self.user=[_  for _ in blank_lines if _ !='']
                 self.user = ' '.join(self.user)
-            
-            
 
+                account_password=[_ for _ in blank_lines_password if _ != ""]
+                account_password = ' '.join(account_password)
             #if(len(self.user)>1):
             #tam = len(self.user)
             #teste = ' '.join(self.user[0:tam]) 
