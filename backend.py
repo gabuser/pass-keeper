@@ -526,21 +526,31 @@ class contas(login):
             para isso ele vai utilizar como base apenas um valor e verificar se o tipo dele corresponde 
             com o valor encriptado ou não. ainda precisa de testes mais aprofundados"""
     
-    def deleting_passwords(self):
+    def deleting_passwords(self,user):
         confirmation = True
-        datas = list()
-        removing_blank_lines = None
-        
-        while confirmation:
-            values= input("insira o nome da plataforma(netflix, amazon,hbo,google...):")
-            
-            if(values =='q'):
-                confirmation = False
-                
-            datas.append(values)
+        lenght_password = 0
 
-        removing_blank_lines = [_ for _ in datas if _ != ""]
-        print(removing_blank_lines)
+        comandos.execute("""select id_login from login
+                         where usuario in (:usuario)""",{
+                             'usuario':user
+                         })
+        foreign_key = comandos.fetchone()[0]
+
+        while confirmation:
+            removing_passwords= input("insira o nome da plataforma(netflix, amazon,hbo,google...):")
+            
+            if(removing_passwords=='q'):
+                confirmation = False
+
+            else:
+                comandos.execute("""delete from conta
+                                     where id_usuario in(:id_usuario)
+                                     and plataformas in(:plataformas)""",
+                                     {
+                                        "id_usuario":foreign_key, "plataformas":removing_passwords
+                                     })
+                conectar.commit()
+                    
 log =  login()
 conta = contas()
 #conta.apagar_conta('gabriel')

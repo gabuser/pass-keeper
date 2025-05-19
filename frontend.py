@@ -101,13 +101,14 @@ class interfaces:
                     elif(account_password) == '':#precisa ser arrumado, contém vulnerabilidade.
                         generated_password = conta.gerar_senha()
                         conta.criar_conta(self.user,generated_password,
-                                          self.email)
+                                          self.create_email)
                         
-                        print("\nATENÇÃO, A SENHA DO LOGIN ABAIXO:\n")
+                        print("\nATENÇÃO, SENHA QUE FOI GERADO AUTOMATICAMENTE, ELA É USADA PARA VOCÊ LOGAR:\n")
 
-                        print("-"*50)
+                        print("#"*50,"\n")
                         print(f'senha senha é: {generated_password}\n')
-                        print("-"*50)
+                        print("#"*50,"\n")
+                        #print("\n ATENÇÃO, SENHA QUE FOI GERADO AUTOMATICAMENTE, ELA É USADA PARA VOCÊ LOGAR ")
                         break
                     
                     else:
@@ -161,7 +162,7 @@ class interfaces:
                         self.see()
                     
                     case '4':
-                        self.delete_password()
+                        self.delete_password(self.user)
                     #case '4':
                         #u = self.user
                         #conta.isencripted(self.user)
@@ -346,8 +347,9 @@ class interfaces:
                 self.response = True
                 self.user_interface()"""
     
-    def delete_password(self):
-        conta.deleting_passwords()
+    def delete_password(self,user):
+        
+        conta.deleting_passwords(user)
 
     def main(self):
         self.user_input()

@@ -13,9 +13,11 @@ class Object_bytes:
                           string.punctuation)
         
         self.password = ''.join(random.choices(letters,k=50))
-        print(f'sua senha é: {self.password} \n')
+        print("-"*50)
+        print(f'\n sua senha é: {self.password} \n')
         print('\n senha única para criptografar e descriptografar guarde em um lugar seguro. Caso você perder essa senha,' \
-        'não será possível recupera-la, essa senha não deve ser guardada nesse banco!!')
+        'não será possível recupera-la, essa senha não deve ser guardada nesse banco!! \n')
+        print("-"*50)
         #return password
     
     def salting(self):
