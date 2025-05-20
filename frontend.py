@@ -303,8 +303,11 @@ class interfaces:
                         
                         elif new_name == "":
                             print("\n valor vázio, coloque um valor")
+                        
                         else:
+                            #print(self.user)
                             conta.updating_user(new_name,updt,self.user)
+                            self.user = new_name# ponto a ser observado(futuros erros)
                     
                     case '4':
                         self.plataforma = input("\n insira o nome da plataforma(netflix,amazon...):")

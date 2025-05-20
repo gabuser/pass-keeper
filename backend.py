@@ -259,7 +259,7 @@ class contas(login):
         comandos.execute("""select id_login from login
                                  where usuario =:usuario""",{'usuario':user})
         foreign_key= comandos.fetchone()[0]
-        conectar.commit()
+        #conectar.commit()
 
         match (choose):
             case '1':
