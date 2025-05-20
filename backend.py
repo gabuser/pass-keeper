@@ -186,8 +186,10 @@ class login:
                     print("\n nenhuma senha encontrada")
 
     def cheking_emails(self,service):
+
         comandos.execute("""select Email from login
                          where Email in (:Email)""",{"Email":service})
+        
         try:
             Emails_returned = comandos.fetchone()[0]
             print(Emails_returned)
@@ -415,14 +417,18 @@ class contas(login):
         "com a API do gmail google e possa enviar emails")
         foreign_key = None 
 
-        
-        comandos.execute("""select id_login from login
-                         where usuario in (:usuario) and senha in (:senha)""",{"usuario":user,
-                                                                           "senha":password})
-        foreign_key = comandos.fetchone()
-        conectar.commit()
-        #print(foreign_key[0])
-        if foreign_key:
+        try:
+            comandos.execute("""select id_login from login
+                             where usuario in (:usuario)""",{'usuario':user})
+            foreign_key = comandos.fetchone()[0]
+
+            comandos.execute("""select senha from login
+                where id_login in(:id_login)""",{'id_login':foreign_key})
+            
+            original_password = comandos.fetchone()[0]
+            result = hashh.authentication_hash(password.encode(),original_password)
+
+            if result:
                 self.gmail_password = input("insira a nova senha do app password:")
                 
                 comandos.execute("""update login set gmail = :gmail
@@ -431,9 +437,12 @@ class contas(login):
                 conectar.commit()
                 return True
             
-        else:
+            else:
+                return False
+        
+        except:
             return False
-    
+        
     def isstorage(self,user):
         self.parsing= []
 
