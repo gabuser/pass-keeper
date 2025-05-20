@@ -1,6 +1,6 @@
 import base64 
 import os 
-from cryptography.fernet import Fernet 
+from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import string 
@@ -74,9 +74,9 @@ class processing(Object_bytes):
             #print(type(self.decript[0]))
             return True
         
-        except:
+        except InvalidToken:
             print("\n token inválido, verifique a senha. se voce perdeu ou não tem mais acesso, será necessário" 
-            "por segurança deletar todos os seus dados e criar as senhas novamente.")
+            "\n por segurança deletar todos os seus dados e criar as senhas novamente.")
             
             return False
 

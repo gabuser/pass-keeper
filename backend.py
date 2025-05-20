@@ -324,7 +324,7 @@ class contas(login):
                 except TypeError:
                     return False
             
-            case '5':
+            case '5':#problem to be solved. when the user insert an wrong value, for some reason it's jut stay as wrong without any change
                 comandos.execute("""select plataformas from conta
                                  inner join login on id_usuario =:id_login
                                  where plataformas in (:plataformas)""",
@@ -341,27 +341,31 @@ class contas(login):
                                          where plataformas in (:plataformas)""",
                                          {'id_login':foreign_key, 'plataformas':oldpass[0]})
                         pattern = comandos.fetchall()
+
                         
                         match pattern:
+                            #print(True)
                             case pattern if type(pattern[0][0]) == bytes:
                                 comandos.execute("""select salt from login
                                                  where id_login in (:id_login)""",{'id_login':foreign_key})
                                 salt= comandos.fetchone()[0]
 
-                                saf.unlocking(pattern,salt)
-                                updatedpass = new_password
-                                plataforms = pattern[0][1]
-                                datas = [(updatedpass,plataforms)]
-                                
-                                saf.locking(datas,salt)
-                                newencription = saf.encripted[0]
+                                if(saf.unlocking(pattern,salt)):
+                                    updatedpass = new_password
+                                    plataforms = pattern[0][1]
+                                    datas = [(updatedpass,plataforms)]
 
-                                comandos.execute("""update conta set senhas =:senhas
+
+                                    saf.locking(datas,salt)
+                                    newencription = saf.encripted[0]
+
+                                    comandos.execute("""update conta set senhas =:senhas
                                                  where id_usuario in (:id_usuario)
                                                  and plataformas in (:plataformas)""",{
                                                      'senhas':newencription,'id_usuario':foreign_key,'plataformas':plataforms
                                                  })
-                                conectar.commit()
+                                    conectar.commit()
+                                #print(salt)
                     #passord = self.isencripted(user)
                     else:
                         print('\n insira um senha válida')
