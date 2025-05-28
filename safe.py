@@ -5,6 +5,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import string 
 import random
+import sys
 
 class Object_bytes:
 
@@ -58,26 +59,34 @@ class processing(Object_bytes):
     def unlocking(self,data,salt):
         self.decript = []
         self.plataforms = []
+        self.password = True
 
-        self.password =input("insira sua senha para descriptografar:")
+        #self.password =input("insira sua senha para descriptografar:")
+        while(self.password):
+            try:
+                #print("\n token inválido, a senha que você inseriu não bate!\n")
 
-        try:
-            self.generating(self.password,salt)
-            self.key = Fernet(self.hashed)
+                self.password =input("\n insira a senha que foi usado para criptografar os seus dados ou q para sair:")
 
-            for _ in data:
+                if(self.password == 'q'):
+                    self.password = False
+                    return False
+
+                else:
+                    self.generating(self.password,salt)
+                    self.key = Fernet(self.hashed)
+
+                    for _ in data:
                 
-                self.tobedecrypt= self.key.decrypt(_[0])
-                self.decript.append(self.tobedecrypt.decode())
-                self.plataforms.append(_[1])
-            #print(self.decript)
-            #print(type(self.decript[0]))
-            return True
-        
-        except InvalidToken:
-            print("\n token inválido, verifique a senha. se voce perdeu ou não tem mais acesso, será necessário" 
-            "\n por segurança deletar todos os seus dados e criar as senhas novamente.")
+                        self.tobedecrypt= self.key.decrypt(_[0])
+                        self.decript.append(self.tobedecrypt.decode())
+                        self.plataforms.append(_[1])
+                    break
             
-            return False
+                #return True
+        
+            except InvalidToken:
+                #self.password = True
+                print("\n token inválido: verifique a senha que foi usado para criptografar os seus dados\n")
 
 saving = processing()

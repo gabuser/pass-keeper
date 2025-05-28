@@ -39,11 +39,11 @@ class interfaces:
                 case '0':
                     self.creating()
 
-                    print("#"*50)
+                    """print("#"*50)
                     print("\n SENHA PARA CRIPTOGRAFAR E DESCRIPTOGRAFAR OS SEUS DADOS QUE SÃO ARMAZENADOS!")
                     print("\n ATENÇÃO: caso você perder essa senha, não será mais possível recuperar as senhas \n")
                     print(f"\n senha: {conta.returned}\n")
-                    print("#"*50)
+                    print("#"*50)"""
 
                 case '1':
                     self.user_interface()
@@ -119,7 +119,7 @@ class interfaces:
                         conta.criar_conta(self.user,self.generated_password,
                                           self.create_email)
                         
-                        print("\nATENÇÃO: SENHA QUE FOI GERADO AUTOMATICAMENTE, ELA É USADA PARA VOCÊ LOGAR:\n")
+                        print("ATENÇÃO: SENHA QUE FOI GERADO AUTOMATICAMENTE, ELA É USADA PARA VOCÊ LOGAR:")
                         print("#"*50,)
                         print(f'sua senha é: {self.generated_password}\n')
                         #print("#"*50)
@@ -144,54 +144,64 @@ class interfaces:
                     return True
                 
                 case False:
-                    return False
+                    print("\n senha ou usuário incorreto, por favor verifique os seus dados!\n")
+                    continue
     
     def user_interface(self):
         self.response = self.authentication()
-        
-        if(self.response):
-            print(f"bem vindo {self.user}")
-            
-            while(True):
-                for a,c in enumerate(entrada):
-                    print(f"\n {a}-{c}")
-                
-                options = input("\n insira a sua opção ou q para sair ou ctrl+c para sair:")
-                
-                match options:
+        datas_saved = conta.isstorage(self.user)
 
-                    case 'q':
-                        break
+        if(not datas_saved):
+            print("\n aparentimente você não tem uma chave criptográfica")
+            print(f"\nsua chave é {conta.new_keypass} ")
+
+        if(self.response):
+            try:
+                print(f"\n bem vindo {self.user}")
+            
+                while(True):
+                    for a,c in enumerate(entrada):
+                        print(f"\n {a}-{c}")
+                
+                    options = input("\n insira a sua opção ou q para sair ou ctrl+c para sair:")
+                
+                    match options:
+
+                        case 'q':
+                            #conta.isencripted(self.user)
+                            conta.encrypt(self.user)
+                            break
                     
-                    case '0':
-                        self.storage_password()
+                        case '0':
+                            self.storage_password()
                     
-                    case '1':
-                        self.deleting()
-                        break
+                        case '1':
+                            self.deleting()
+                            break
                     
-                    case '2':
-                        self.updating()
+                        case '2':
+                            self.updating()
                     
-                    case '3':
-                        self.see()
+                        case '3':
+                            self.see()
                     
-                    case '4':
-                        self.delete_password(self.user)
+                        case '4':
+                            self.delete_password(self.user)
                     #case '4':
                         #u = self.user
                         #conta.isencripted(self.user)
-                    case _:
-                        print("\n nenhuma opção foi selecionada")
-        else:
-            print("\n senha ou usuário incorreto")
+                        case _:
+                            print("\n nenhuma opção foi selecionada")
+
+            except KeyboardInterrupt:
+                conta.encrypt(self.user)
 
     def storage_password(self):
         self.armazenar = True
-        isdecript = conta.isencripted(self.user)
+        #isdecript = conta.isencripted(self.user)
 
         try:
-            if(isdecript):
+            if(conta.isencripted(self.user)):
                 while(self.armazenar):
                     self.plataforma = input("\n insira a plataforma ou q para sair ou ctrl+c para sair:")
                     password = None
@@ -201,7 +211,7 @@ class interfaces:
 
                         case 'q':
                             self.armazenar = False
-                            conta.isencripted(self.user)
+                            #conta.isencripted(self.user)
                 
                         case self.plataforma if self.plataforma !='':
                             password = input("\n insira uma senha ou g para gerar uma ou ctrl+c para sair:")
@@ -215,10 +225,12 @@ class interfaces:
 
                             else:
                                 conta.addpasswords(self.plataforma, password,self.user)
+                    
                         case _:
                             print("\n valor não válido")
+                        
         except KeyboardInterrupt:
-            conta.isencripted(self.user)
+            pass
 
     def deleting(self):
             conta.todelete(self.user,self.deleted)
@@ -326,9 +338,11 @@ class interfaces:
                             print('# \n'*50)
                     
                     case '5':
+                        result = conta.isencripted(self.user)
                         
-                        new_password = input("insira o nome da plataforma:")
-                        conta.updating_user(new_password,updt,self.user)
+                        if(result):
+                            new_password = input("insira o nome da plataforma:")
+                            conta.updating_user(new_password,updt,self.user)
 
                     case 'q':
                         self.toupdate = False

@@ -46,8 +46,8 @@ class login:
                          values(:usuario,:senha,:Email,:salt)""",{'usuario':self.usuario,
                                                     'senha':final_hash, "Email":email, "salt":salt})
         conectar.commit()
-        saf.key_password()
-        self.returned = saf.password
+        #saf.key_password()
+        #self.returned = saf.password
     
     def entrar(self,nome:str,input_password:str) -> bool:
         self.nome = nome 
@@ -233,27 +233,61 @@ class contas(login):
                      user:str):
                
         foreign_key = None
-            
-        if(plataform !="" and password != ""):
-            comandos.execute("""select id_login,usuario from login
+
+        comandos.execute("""select id_login,usuario from login
                              where usuario = :usuario""", {"usuario":user})
-            
-            foreign_key = comandos.fetchone()[0]
-            #print(foreign_key)
-            conectar.commit()
+        foreign_key = comandos.fetchone()[0]
+
+        """comandos.execute(select senhas from conta 
+                             where id_usuario in (:id_usuario),{"id_usuario":foreign_key})
         
+        data = comandos.fetchall()"""
+        if(plataform !="" and password !=""):
             comandos.execute("""insert into conta(plataformas,senhas,id_usuario)
                              values (:plataformas,:senhas,:id_usuario)""",{'senhas':password,
-                             "id_usuario":foreign_key, "plataformas":plataform})
+                                'id_usuario':foreign_key,'plataformas':plataform})
             conectar.commit()
-            
+        
+        """if(plataform !="" and password != ""):
+            comandos.execute(select salt from login
+                             where id_login in (:id_login),{
+                                 'id_login':foreign_key
+                             })
+            salt = comandos.fetchone()[0]"""
+        
+        """try:
+                match data:
+                    case data if type(data[0][0]) == bytes:
+                        unlocking = saf.unlocking(data,salt)
+
+                        if(unlocking):
+                            comandos.execute(insert into conta(plataformas,senhas,id_usuario)
+                                values (:plataformas,:senhas,:id_usuario),{'senhas':password,
+                                "id_usuario":foreign_key, "plataformas":plataform})
+                        
+                            conectar.commit()
+                            return True
+                
+                    case data if type(data[0][0]) == str:
+                    
+                        comandos.execute(insert into conta(plataformas,senhas,id_usuario)
+                             values (:plataformas,:senhas,:id_usuario),{'senhas':password,
+                             "id_usuario":foreign_key, "plataformas":plataform})
+                    
+                        conectar.commit()
+                        return True
+                    
+            except IndexError:
+                comandos.execute(insert into conta(plataformas, senhas,id_usuario)
+                                 values (:plataformas,:senhas,:id_usuario),{"senhas":password,
+                                "id_usuario":foreign_key,"plataformas":plataform})
+                conectar.commit()
         else:
             print("apenas dados válidos")
 
         
-        #except KeyboardInterrupt:
+        #except KeyboardInterrupt:"""
             
-        
     def updating_user(self,account:str,choose,user) ->None:
         foreign_key = None
         comandos.execute("""select id_login from login
@@ -351,20 +385,34 @@ class contas(login):
                                 salt= comandos.fetchone()[0]
 
                                 if(saf.unlocking(pattern,salt)):
-                                    updatedpass = new_password
+                                    #updatedpass = new_password
                                     plataforms = pattern[0][1]
-                                    datas = [(updatedpass,plataforms)]
-
-
-                                    saf.locking(datas,salt)
-                                    newencription = saf.encripted[0]
+                                    #datas = [(updatedpass,plataforms)]
+                                    
+                                    comandos.execute("""update conta set senhas=:senhas
+                                                     where id_usuario in (:id_usuario)
+                                                     and plataformas in (:plataformas)""",{"senhas":new_password,
+                                                                                           "plataformas":plataforms,"id_usuario":foreign_key})
+                                    conectar.commit()
+                            
+                            case pattern if type(pattern[0][0]) == str:
+                                    plataforms = pattern[0][1]
 
                                     comandos.execute("""update conta set senhas =:senhas
+                                                     where id_usuario in (:id_usuario)
+                                                     and plataformas in (:plataformas)""",{"senhas":new_password,
+                                                                                           "plataformas":plataforms,"id_usuario":foreign_key})
+                                    conectar.commit()
+
+                                    """saf.locking(datas,salt)
+                                    newencription = saf.encripted[0]
+
+                                    comandos.execute(update conta set senhas =:senhas
                                                  where id_usuario in (:id_usuario)
-                                                 and plataformas in (:plataformas)""",{
+                                                 and plataformas in (:plataformas),{
                                                      'senhas':newencription,'id_usuario':foreign_key,'plataformas':plataforms
                                                  })
-                                    conectar.commit()
+                                    conectar.commit()"""
                                 #print(salt)
                     #passord = self.isencripted(user)
                     else:
@@ -451,42 +499,48 @@ class contas(login):
         self.parsing= []
 
         foreign_key = None
-
-        comandos.execute("""select id_login from login
+        try:
+            comandos.execute("""select id_login from login
                          where usuario in (:usuario)""",{'usuario':user})
         
-        foreign_key = comandos.fetchone()[0]
+            foreign_key = comandos.fetchone()[0]# new problem found 
 
         #conectar.commit()
 
-        comandos.execute("""select senhas,plataformas from conta
+            comandos.execute("""select senhas,plataformas from conta
                         inner join login on id_usuario = :id_login""",{"id_login":foreign_key})
         
-        self.password= comandos.fetchall()
+            self.password= comandos.fetchall()
 
-        comandos.execute("""select salt from login
+            comandos.execute("""select salt from login
                          where id_login in(:id_login)""",{'id_login':foreign_key})
         
-        self.salt = comandos.fetchone()[0]
+            self.salt = comandos.fetchone()[0]
         #conectar.commit()
 
-        if self.password:
+            if self.password:
 
-            return True
+                return True
         
-        else:
-            return False
+            else:
+                saf.key_password()
+                self.new_keypass =saf.password 
+                return False
+        except TypeError:
+            return True
         """função para verificar se há dados armazenados no gerenciador, se os dados
         estiverem armazenados, significa que o usuário já tem a chave criptográfica, caso 
         contrário é necessário criar um. a função retornará false ou true"""
     
     def isencripted(self,user):
         foreign_key = None
-        valid = self.isstorage(user)
-        if(valid):
+        count_function = 0
 
-            comandos.execute("""select id_login from login
-                             where usuario in (:usuario)""",{'usuario':user})
+        #valid = self.isstorage(user)
+        """if(valid):
+
+            comandos.execute(select id_login from login
+                             where usuario in (:usuario),{'usuario':user})
             
             foreign_key = comandos.fetchone()[0]
 
@@ -500,9 +554,9 @@ class contas(login):
                         converted= saf.decript[_]
                         plataforms = saf.plataforms[_]
 
-                        comandos.execute("""update conta set senhas = :senhas
+                        comandos.execute(update conta set senhas = :senhas
                                          where id_usuario in (:id_usuario)
-                                         and plataformas in (:plataformas)""", {'plataformas':plataforms,
+                                         and plataformas in (:plataformas), {'plataformas':plataforms,
                                                                                 'id_usuario':foreign_key,
                                                                                 'senhas':converted})
                         conectar.commit()
@@ -511,35 +565,95 @@ class contas(login):
                         return True
                     
                     else:
-                        return False
+                        return False"""
                     
-                case self.password if type(self.password[0][0]) == str:
+                #case self.password if type(self.password[0][0]) == str:
+        comandos.execute("""select id_login from login
+                         where usuario in (:usuario)""",{
+                             "usuario":user
+                         })
+        foreign_key = comandos.fetchone()[0]
 
-                    saf.locking(self.password,self.salt)
+        try:
+            comandos.execute("""select senhas, plataformas from conta
+                         where id_usuario in (:id_usuario)""",{
+                             "id_usuario":foreign_key
+                         })
+            datas = comandos.fetchall()
+            
+            comandos.execute("""select salt from login
+                              where id_login in (:id_login)""",{
+                             "id_login":foreign_key
+                            })
+        
+            salt = comandos.fetchone()[0]
+
+            #count_function+=1
+            match datas:
+                case datas if type(datas[0][0]) == bytes:
+                    result = saf.unlocking(datas,salt)
+
+                    if(result !=False):
+                        for _ in range(len(saf.decript)):
+                            binary = saf.decript[_]
+                            plataforms = saf.plataforms[_]
+
+                            comandos.execute("""update conta set senhas=:senhas
+                                         where id_usuario in(:id_usuario)
+                                         and plataformas in (:plataformas)""",{'plataformas':plataforms,
+                                                                               'id_usuario':foreign_key,
+                                                                               'senhas':binary})
+                        conectar.commit()
+                        return True
+                
+                case _:
+                    return True
+                
+        except IndexError:
+            return True
+    
+    def encrypt(self,user):
+        comandos.execute("""select id_login from login
+                         where usuario in (:usuario)""",{
+                             "usuario":user
+                         })
+        foreign_key = comandos.fetchone()[0]
+
+        comandos.execute("""select senhas, plataformas from conta
+                         where id_usuario in (:id_usuario)""",{
+                             "id_usuario":foreign_key
+                         })
+        datas = comandos.fetchall()
+            
+        comandos.execute("""select salt from login
+                              where id_login in (:id_login)""",{
+                             "id_login":foreign_key
+                            })
+        
+        salt = comandos.fetchone()[0]
+
+        try:
+            match datas:
+                case datas if type(datas[0][0]) == str:
+                    saf.locking(datas,salt)
 
                     for _ in range(len(saf.encripted)):
                         binary = saf.encripted[_]
                         plataforms = saf.plataforms[_]
 
                         comandos.execute("""update conta set senhas = :senhas
-                                         where id_usuario in (:id_usuario) 
-                                         and plataformas in (:plataformas)""",
-                                         {'plataformas':plataforms, 'id_usuario':foreign_key,
-                                          'senhas':binary})
+                        where id_usuario in (:id_usuario) 
+                        and plataformas in (:plataformas)""",
+                        {'plataformas':plataforms, 'id_usuario':foreign_key,
+                        'senhas':binary})
+                    
                         conectar.commit()
-                    
-                    return False
-                
-                #case _:
-                 #   return False
-                    
-        else:
-            return True
+                    return True
         
-            """função que vamos criar para verificar se um valor está encriptado ou não
-            para isso ele vai utilizar como base apenas um valor e verificar se o tipo dele corresponde 
-            com o valor encriptado ou não. ainda precisa de testes mais aprofundados"""
-    
+        except IndexError:
+            print("dados salvos")
+        
+                
     def deleting_passwords(self,user):
         confirmation = True
         lenght_password = 0
