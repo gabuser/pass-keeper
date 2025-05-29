@@ -291,12 +291,20 @@ class interfaces:
                     
                     case '2' if updt :
                         password= input("\n insira a nova senha:")
+                        taking_blank_lines= password.split(" ")
+                        #taking_blank_lines= ' '.join(taking_blank_lines)
 
-                        if(password!= ""):
+                        removing_blank = [_ for _ in taking_blank_lines if _ !=""]
+
+                        password = ' '.join(removing_blank)
+                        if(password =="" or len(password)<6):
+                            password = conta.gerar_senha()
                             conta.updating_user(password,updt,self.user)
+                            print(f"\n sua senha de login foi atualizada com sucesso: {password}")
                         
                         else:
-                            print("\n insira dados válidos")
+                            conta.updating_user(password,updt,self.user)
+                            print("\n senha atualizada com sucesso!")
                     
                     case '3':
                         new_name = input("\n insira o novo nome:")
