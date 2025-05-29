@@ -112,23 +112,24 @@ class interfaces:
                         print("\n ERROR:verifique se o usuário foi deixado em branco")
                         #continue
                     
-                    elif(self.account_password) == '':#precisa ser arrumado, contém vulnerabilidade.
+                    elif(len(self.account_password)<6 or self.account_password ==""):#precisa ser arrumado, contém vulnerabilidade.
                         self.generated_password = conta.gerar_senha()
 
                         conta.criar_conta(self.user,self.generated_password,
                                           self.create_email)
                         
-                        print("ATENÇÃO: SENHA QUE FOI GERADO AUTOMATICAMENTE, ELA É USADA PARA VOCÊ LOGAR:")
+                        print("\n ATENÇÃO: SENHA QUE FOI GERADO AUTOMATICAMENTE, ELA É USADA PARA VOCÊ LOGAR:")
                         print("#"*50,)
-                        print(f'sua senha é: {self.generated_password}\n')
-                        #print("#"*50)
+                        print(f'\n sua senha é: {self.generated_password}')
+                        print("\n caso sua senha for menor que 6 caracteres, uma senha automática também será gerada")
+                        print("#"*50)
                         #print("\n ATENÇÃO, SENHA QUE FOI GERADO AUTOMATICAMENTE, ELA É USADA PARA VOCÊ LOGAR\n")
                         break
-                    
+
                     else:
                         conta.criar_conta(self.user,self.account_password,self.create_email)
                         break
-                
+            
     def authentication(self) -> bool:
         self.auth = False
         while (not self.auth):
