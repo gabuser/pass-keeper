@@ -1,5 +1,4 @@
 import backend
-import getpass
 banco = backend.log
 conta = backend.conta
 
@@ -211,6 +210,7 @@ class interfaces:
 
                         case 'q':
                             self.armazenar = False
+                            print("\n dados salvos!")
                             #conta.isencripted(self.user)
                 
                         case self.plataforma if self.plataforma !='':
@@ -230,7 +230,7 @@ class interfaces:
                             print("\n valor não válido")
                         
         except KeyboardInterrupt:
-            pass
+            print("\n dados salvo!")
 
     def deleting(self):
             conta.todelete(self.user,self.deleted)
@@ -264,19 +264,10 @@ class interfaces:
                         break
                     
                     case None:
-                        #print("\n conta criado com sucesso!!")
                         if(self.create_email ==''):
                             self.create_email = None
                         break
                 
-            
-            """if(create_email == 'n'):
-                self.email = None
-                break
-            
-            else:
-                print("\n insira um valor válido")"""
-    
     def updating(self):
             self.toupdate= True
             while(self.toupdate):

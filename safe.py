@@ -5,7 +5,6 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import string 
 import random
-import sys
 
 class Object_bytes:
 
@@ -29,9 +28,7 @@ class Object_bytes:
         self.hashed = base64.urlsafe_b64encode(kdf.derive(password.encode()))
 
 class processing(Object_bytes):
-    def setting(self):
-        pass
-
+    
     def locking(self,data,salt):
         self.encripted=[]
         self.plataforms = []
