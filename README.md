@@ -4,7 +4,7 @@
 - [⚙️ INSTALAÇÃO](#como-baixar)
 - [🚀 INSTRUÇÕES](#como-usar)
 - [🏁 FINALIZAÇÃO](#considerações-finais)
-<br>
+
 ### introdução do projeto
 
 Pass Keeper é um gerenciador de senhas simples, desenvolvido com o objetivo de estudar lógica de programação e banco de dados. O projeto visa armazenar senhas localmente no computador do usuário, garantindo maior privacidade e segurança.
@@ -12,7 +12,7 @@ Pass Keeper é um gerenciador de senhas simples, desenvolvido com o objetivo de 
 Ao contrário de soluções baseadas na nuvem, o Pass Keeper permite que o usuário gerencie suas senhas sem limitações de espaço, estando restrito apenas ao armazenamento disponível no seu próprio dispositivo.
 
 Este projeto é uma base para aprendizado e pode — e deve — ser aprimorado continuamente para oferecer mais funcionalidades e segurança e também para ser otimizado com o tempo.
-<br>
+
 # como baixar? 
 > pip install -r requirements.txt
 
@@ -21,7 +21,7 @@ Este projeto é uma base para aprendizado e pode — e deve — ser aprimorado c
 
 > ❕	**AVISO**<br>
 >Caso o python não for instalado, erros inesperados podem ocorrer.
-<br>
+
 # como usar?
 ### chave usada para criptografar os dados🔒
 >ao logar na sua conta criada, o script irá fornecer uma chave que será usada para criptografar e descriptografar os seus dados. Aparece logo quando você loga na conta se ainda não possuir uma.
