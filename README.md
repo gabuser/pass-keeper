@@ -62,7 +62,7 @@ https://www.youtube.com/watch?v=ZfEK3WP73eY
 ### testes🚧
 > Ainda precisa ser feito testes em outros computadores por outros usuários, sinta-se a vontade para testa-lo e relatar possível problemas de funcionamento.
 
-> É recomendável que você coloque uma permissão específica no arquivo.db, porque ainda não foi implementado Uma forma de segurança contra deleções acidentais ou propositais desse arquivo. Isso porquê ainda está na fase inicial.
+> É recomendável que você coloque uma permissão específica no arquivo.db e também nos arquivos.py, porque ainda não foi implementado Uma forma de segurança contra deleções acidentais ou propositais desses arquivo. Isso porquê ainda está na fase inicial.
 
 ## Dependências
 
