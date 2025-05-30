@@ -14,10 +14,15 @@ Ao contrário de soluções baseadas na nuvem, o Pass Keeper permite que o usuá
 Este projeto é uma base para aprendizado e pode — e deve — ser aprimorado continuamente para oferecer mais funcionalidades e segurança e também para ser otimizado com o tempo.
 
 # como baixar? 
-> pip install -r requirements.txt
+### sem precisar usar o git para baixar
+> Code > Download zip
+### baixando as dependências
+>pip install -r requirements.txt
 
 > ⚠️ **ATENÇÃO**<br>
-> python precisa ser instalado antes do requirements.txt para que possa funcionar corretamente
+> python precisa ser instalado antes do requirements.txt para que possa funcionar corretamente <br>
+
+site oficial:```https://www.python.org/downloads/```
 
 > ❕	**AVISO**<br>
 >Caso o python não for instalado, erros inesperados podem ocorrer.
